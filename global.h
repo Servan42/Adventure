@@ -1,14 +1,12 @@
 #ifndef _GLOBAL_H
 #define _GLOBAL_H
 
-#define TERMINAL_CLEAR 1 // OS Sensistive
-
 typedef struct _player {
-	int hp;
-	int hpMax;
-   	int lvl;
-    int xp;
-    int xpStage;
+	unsigned int hp;
+	unsigned int hpMax;
+	unsigned int lvl;
+	double xp;
+	double xpStage;
 	char playerName[100];
 	} player, *pplayer;
 

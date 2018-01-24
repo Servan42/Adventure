@@ -6,9 +6,7 @@
 void init_game(pplayer P){
 	printf("Bienvenue ! Quel est ton nom aventurier ?\n-->");
     scanf("%s",P->playerName);
-#if TERMINAL_CLEAR
     system("clear");
-#endif
 
     P->hp=50;
     P->hpMax=50;

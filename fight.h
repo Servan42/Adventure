@@ -2,9 +2,16 @@
 #define _FIGHT_H
 
 #include "global.h"
-#include "display_fight.h"
+
+typedef struct _monster {
+	unsigned int hp;
+	unsigned int hpMax;
+	unsigned int lvl;
+	int ascii;
+} monster, *pmonster;
 
 int alea(int a, int b);
+void init_monster(pmonster M, pplayer P);
 int fight(pplayer P);
 
 #endif
