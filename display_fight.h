@@ -7,6 +7,8 @@
 void display_header(pplayer P);
 void display_bar_player(pplayer P, int bar);
 void display_bar_monster(pmonster M);
+void display_appears();
+void display_monster(int nMonster);
 
 
 #endif

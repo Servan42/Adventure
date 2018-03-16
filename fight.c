@@ -22,9 +22,25 @@ void init_monster(pmonster M, pplayer P){
 }
 
 int fight(pplayer P){
+	// Init the new monster
 	pmonster M;
 	M = malloc(sizeof(monster));
 	init_monster(M, P);
+	
+	// One-time introduction (one per monster)
 	display_header(P);
+	display_appears();
+	getchar();
+	system("clear");
+
+	// Fight loop
+
+	while(M->hp > 0){
+		display_header(P);
+		display_monster(M->ascii);
+		
+		break;	
+	}
+
 	return 1;
 }

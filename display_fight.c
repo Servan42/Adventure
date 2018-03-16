@@ -13,7 +13,7 @@ void display_header(pplayer P){
 	display_bar_player(P, HEALTH_BAR_PLAYER); printf("\n");
 	printf("Experience : %0.0lf/%0.0lf XP\n",P->xp,P->xpStage);
 	display_bar_player(P, XP_BAR); printf("\n");
-	printf("--------------------------------------------------\n");
+	printf("--------------------------------------------------\n\n");
 }
 
 void display_bar_player(pplayer P, int bar){
@@ -72,4 +72,95 @@ void display_bar_monster(pmonster M){
 		printf(" ");
 	}
 	printf("]");
+}
+
+void display_appears(){
+	printf("\t***************************\n");
+	printf("\t*                         *\n");
+	printf("\t*  UN MONSTRE APPARAIT !  *\n");
+	printf("\t*                         *\n");
+	printf("\t***************************\n");
+}
+
+void display_monster(int nMonster){
+    switch(nMonster)
+    {
+    case 1:
+
+        printf("  __\n");
+        printf("<(o )___\n");
+        printf(" ( ._> /\n");
+        printf("  `---'\n");
+
+        break;
+    case 2:
+printf("             \\                  /\n");
+printf("    _________))                ((__________\n");
+printf("   /.-------./\\\\    \\    /    //\\.--------.\\\n");
+printf("  //#######//##\\\\   ))  ((   //##\\\\########\\\\\n");
+printf(" //#######//###((  ((    ))  ))###\\\\########\\\\\n");
+printf("((#######((#####\\\\  \\\\  //  //#####))########))\n");
+printf(" \\##' `###\\######\\\\  \\)(/  //######/####' `##/\n");
+printf("  )'    ``#)'  `##\\`->oo<-'/##'  `(#''     `(\n");
+printf("          (       ``\\`..'/''       )\n");
+printf("                     \\""(\n");
+printf("                      `- )\n");
+printf("                      / /\n");
+printf("                     ( /\\\n");
+printf("                     /\\| \\\n");
+printf("                    (  \\\n");
+printf("                        )\n");
+printf("                       /\n");
+printf("                      (\n");
+printf("                      `\n");
+        break;
+    case 3:
+printf("                .---.\n");
+printf("              /       \\\n");
+printf("---- _       |  O   O  |       _ ---\n");
+printf("\\       ~-.  `.       .'  .-~      /\n");
+printf(" \\          ~-_>     <_-~         /\n");
+printf("   \\                             /\n");
+printf("     \\                         /\n");
+printf("       \\                     /\n");
+printf("         \\                 /\n");
+printf("           \\             /\n");
+printf("             \\         /\n");
+printf("               \\       \\\n");
+printf("                 \\      \\\n");
+printf("                   \\     \\\n");
+printf("                     \\    \\\n");
+printf("                       \\   l\n");
+printf("                         \\ /\n");
+printf("                          V\n");
+        break;
+    case 4:
+printf("|@|@|@|@|           |@|@|@|@|\n");
+printf("|@|@|@|@|   _____   |@|@|@|@|\n");
+printf("|@|@|@|@| /\\_T_T_/\\ |@|@|@|@|\n");
+printf("|@|@|@|@||/\\ T T /\\||@|@|@|@|\n");
+printf(" ~/T~~T~||~\\/~T~\\/~||~T~~T\\~\n");
+printf("  \\|__|_| \\(-(O)-)/ |_|__|/\\\n");
+printf("  _| _|    \\\\8_8//    |_ |_\n");
+printf("|(@)]   /~~[_____]~~\\   [(@)|\n");
+printf("  ~    (  |       |  )    ~\n");
+printf("      [~` ]       [ '~]\n");
+printf("      |~~|         |~~|\n");
+printf("      |  |         |  |\n");
+printf("     _<\\/>_       _<\\/>_\n");
+printf("    /_====_\\     /_====_\\\n");
+        break;
+    case 5:
+printf("        \\\\            //           \\\\\n");
+printf("        lo> <<       <o\\          <*l    //\n");
+printf("        ll             \\\\          ll   <*l\n");
+printf("        llama~         llama~  ^amall    ll\n");
+printf("        || ||          \\ \\    || ||    llama~\n");
+printf("        '' ''           '' ''   '' ''    // //\n");
+printf("                                        '' ''\n");
+        break;
+    }
+
+    printf("\n");
+
 }
