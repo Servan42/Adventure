@@ -5,15 +5,54 @@
 #define HEALTH_BAR_PLAYER 1
 #define XP_BAR 2
 
-void display_header(pplayer P){
-	printf("--------------------------------------------------\n");
+void display_header(pplayer P, int lifeChangePlayer){
+	printf("--------------------------------------------------\n\n");
 	printf("\033[1m%s\033[0m | ",P->playerName);
 	printf("Niveau : \033[96m%d\033[0m\n", P->lvl);
 	printf("Vie : %d/%d HP\n",P->hp,P->hpMax);
-	display_bar_player(P, HEALTH_BAR_PLAYER); printf("\n");
+	
+	display_bar_player(P, HEALTH_BAR_PLAYER);
+	if(lifeChangePlayer > 0){
+    	printf("\033[32m +%d\033[0m HP\n", lifeChangePlayer);
+    } else if(lifeChangePlayer < 0){
+    	printf("\033[31m %d\033[0m HP\n", lifeChangePlayer);
+    } else {
+    	printf("\n");
+    }
+
 	printf("Experience : %0.0lf/%0.0lf XP\n",P->xp,P->xpStage);
 	display_bar_player(P, XP_BAR); printf("\n");
-	printf("--------------------------------------------------\n\n");
+	printf("\n--------------------------------------------------\n\n");
+}
+
+void display_monster(pmonster M, pplayer P, int lifeChangeMonster){
+	display_monster_ascii(M->ascii);
+	printf("\n");
+    
+    if((P->lvl + 1) == M->lvl){
+        printf("\nNiveau : \033[33m%d\033[0m\n",M->lvl);
+	} else if(P->lvl < M->lvl){
+        printf("\nNiveau : \033[31m%d\033[0m\n",M->lvl);
+    } else if(P->lvl == M->lvl){
+        printf("\nNiveau : \033[32m%d\033[0m\n",M->lvl);
+	} else {
+        printf("\nNiveau : %d\n",M->lvl);
+    }
+	
+	printf("Vie : %d/%d HP\n", M->hp, M->hpMax);
+	
+	display_bar_monster(M);
+    if(lifeChangeMonster > 0){
+    	printf("\033[32m +%d\033[0m HP\n", lifeChangeMonster);
+    } else if(lifeChangeMonster < 0){
+    	printf("\033[31m %d\033[0m HP\n", lifeChangeMonster);
+    } else {
+    	printf("\n");
+    }
+
+
+	printf("\n");
+	printf("--------------------------------------------------\n");
 }
 
 void display_bar_player(pplayer P, int bar){
@@ -55,6 +94,7 @@ void display_bar_player(pplayer P, int bar){
 
 void display_bar_monster(pmonster M){
 	int i;
+	printf("[");
 	printf("\033[8m");
 	if(M->hp < M->hpMax/3){
 		printf("\033[41m");
@@ -82,7 +122,70 @@ void display_appears(){
 	printf("\t***************************\n");
 }
 
-void display_monster(int nMonster){
+void display_you_lose(){
+	printf("\t***************************\n");
+	printf("\t*                         *\n");
+	printf("\t*        YOU LOSE !       *\n");
+	printf("\t*                         *\n");
+	printf("\t***************************\n");
+}
+
+void display_run(){
+	printf("\t***************************\n");
+	printf("\t*                         *\n");
+	printf("\t* VOUS PRENEZ LA FUITE !  *\n");
+	printf("\t*                         *\n");
+	printf("\t***************************\n");
+}
+
+void display_victory(int lvlEarned, int xpEarned){
+	printf("\t***************************\n");
+	printf("\t*                         *\n");
+	printf("\t*        YOU WIN !        *\n");
+	printf("\t*                         *\n");
+	printf("\t***************************\n");
+	printf("\n");
+	printf("\033[36m");
+	printf("Vous gagnez %d points d'experience.\n", xpEarned);
+	if(lvlEarned != 0){
+		if(lvlEarned == 1) printf("Vous gagnez %d niveau !\n", lvlEarned);
+		else printf("Vous gagnez %d niveaux !\n", lvlEarned);
+	}
+	printf("\033[0m\n");
+	printf("--------------------------------------------------\n");
+
+}
+
+
+void display_text(int text_id){
+	printf("\n");
+	switch(text_id){
+		case 0:
+			printf("Un monstre apparait !\n");
+			break;
+		case 1:
+			printf("Vous attaquez !\n");
+			break;
+		case 2:
+			printf("Vous attaquez ! \033[33mCoup Critique !\033[0m\n");
+			break;
+		case 3:
+			printf("Vous attaquez ! \033[31mEchec critique !\033[0m");
+			break;
+		case 4:
+			printf("Vous vous soignez !\n");
+			break;
+		case 5:
+        	printf("La fuite a echouee ! Le monstre vous rattrape et vous attaque !\n");
+        	break;
+		default:
+			printf("\n");
+	}
+	printf("\n--------------------------------------------------\n");
+
+}
+
+void display_monster_ascii(int nMonster){
     switch(nMonster)
     {
     case 1:

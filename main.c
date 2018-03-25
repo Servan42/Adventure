@@ -19,16 +19,16 @@ void init_game(pplayer P){
 int main(int argc, char const *argv[])
 {
 	pplayer P;
-	int gameover = 0;
+	int playerAlive = 1;
     srand(time(NULL));
 
 	P = malloc(sizeof(player));
 
 	init_game(P);
 
-    while(gameover!=1)
+    while(playerAlive)
     {
-        gameover = fight(P);
+        playerAlive = fight(P);
     }
 
 	return 0;
