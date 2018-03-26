@@ -150,71 +150,92 @@ int run(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeCha
     }
 }
 
-
 int fight(pplayer P){
-	// Init the new monster
-	pmonster M;
-	M = malloc(sizeof(monster));
-	init_monster(M, P);
-	int action, lifeChangePlayer = 0, lifeChangeMonster = 0, text_id = 0;
-	int monsterAlive = 1, playerAlive = 1;
-	int lvlEarned = 0, xpEarned = 0;
+    int action, lifeChangePlayer = 0, lifeChangeMonster = 0, text_id = 0;
+    int monsterAlive = 1, playerAlive = 1;
+    int lvlEarned = 0, xpEarned = 0;
     int fui = 0;
-	
-	// One-time introduction (one per monster)
-	system("clear");
-	display_header(P,lifeChangePlayer);
-	display_appears();
-	getchar();
-	system("clear");
-	display_header(P,lifeChangePlayer);
-	display_monster(M,P, lifeChangeMonster);
-	display_text(text_id);
+    pmonster M;
 
-	// Fight loop
-	while(monsterAlive && playerAlive){
-		action = action_choice();
-		switch(action){
-			case 1:
-				attack(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
-				break;
-			case 2:
-				heal(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
-				break;
-			case 3:
-				fui = run(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
-				break;
-		}
+    int state = STATE_CHOICE;
+    
+    M = malloc(sizeof(monster));
+    init_monster(M, P);
 
-		if(P->hp == 0){
-			// Défaite du joueur
-			playerAlive = 0;
-			system("clear");
-			display_header(P,lifeChangePlayer);
-			display_you_lose();
-		}
-		else if(M->hp == 0){
-			// Monstre vaincu
-			monsterAlive = 0;
-			if(fui == 0){            
+    // One-time introduction (one per monster)
+    system("clear");
+    display_header(P,lifeChangePlayer);
+    display_appears();
+    getchar();
+
+    while(monsterAlive && playerAlive){
+        switch(state){
+            case STATE_CHOICE:
+                system("clear");
+                display_header(P,lifeChangePlayer);
+                display_monster(M,P, lifeChangeMonster);
+                display_text(text_id);
+                action = action_choice();
+                switch(action){
+                    case 1:
+                        state = STATE_ATTACK;
+                        break;
+                    case 2:
+                        state = STATE_HEAL;
+                        break;
+                    case 3:
+                        state = STATE_RUN;
+                        break;
+                }
+                break;
+            case STATE_ATTACK:
+                attack(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
+                if(P->hp == 0){
+                    state = STATE_DEFEAT;
+                } else if(M->hp == 0){
+                    state = STATE_VICTORY;
+                } else {
+                    state = STATE_CHOICE;
+                }
+                break;
+            case STATE_HEAL:
+                heal(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
+                if(P->hp == 0){
+                    state = STATE_DEFEAT;
+                } else {
+                    state = STATE_CHOICE;
+                }
+                break;
+            case STATE_RUN:
+                fui = run(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
+                if(P->hp == 0){
+                    state = STATE_DEFEAT;
+                } else if(fui == 0){
+                    state = STATE_CHOICE;
+                } else {
+                    state = STATE_RUN_SUCCESS;
+                }
+                break;
+            case STATE_RUN_SUCCESS:
+                monsterAlive = 0;
+                break;
+            case STATE_VICTORY:
+                monsterAlive = 0;          
                 xp(P, M, &lvlEarned, &xpEarned);
                 lifeChangePlayer = 0;
-    			system("clear");
-    			display_header(P,lifeChangePlayer);
-    			display_victory(lvlEarned,xpEarned);
-    			getchar();
-            }
-		}
-		else {
-			// Combat en cours
-            system("clear");
-            display_header(P,lifeChangePlayer);
-            display_monster(M,P, lifeChangeMonster);
-            display_text(text_id);
+                system("clear");
+                display_header(P,lifeChangePlayer);
+                display_victory(lvlEarned,xpEarned);
+                getchar();
+                break;
+            case STATE_DEFEAT:
+                playerAlive = 0;
+                system("clear");
+                display_header(P,lifeChangePlayer);
+                display_you_lose();
+                break;
         }
-		text_id = -1;
+    }
 
-	}
-
-	return playerAlive;
+    return playerAlive;
 }

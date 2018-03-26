@@ -10,6 +10,14 @@ typedef struct _monster {
 	int ascii;
 } monster, *pmonster;
 
+#define STATE_CHOICE 0
+#define STATE_ATTACK 1
+#define STATE_HEAL 2
+#define STATE_RUN 3
+#define STATE_VICTORY 4
+#define STATE_DEFEAT 5
+#define STATE_RUN_SUCCESS 6
+
 int alea(int a, int b);
 void init_monster(pmonster M, pplayer P);
 int action_choice();
