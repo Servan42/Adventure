@@ -55,6 +55,12 @@ void display_monster(pmonster M, pplayer P, int lifeChangeMonster){
 	printf("--------------------------------------------------\n");
 }
 
+double my_round(double a){
+	int b = a - floor(a);
+	if(b == 0.5) return floor(a);
+	else return round(a);
+}
+
 void display_bar_player(pplayer P, int bar){
 	int i;
 	switch(bar){
@@ -69,22 +75,22 @@ void display_bar_player(pplayer P, int bar){
 				printf("\033[42m");
 			}
 
-			for(i = 0; i < ((P->hp*100)/P->hpMax)/5; i++){
+			for(i = 0; i < round(((P->hp*100)/P->hpMax)/5); i++){
 				printf("*");
 			}
 			printf("\033[0m");
-			for(i = 0; i < 20-((P->hp*100)/P->hpMax)/5; i++){
+			for(i = 0; i < my_round(20-((P->hp*100)/P->hpMax)/5); i++){
 				printf(" ");
 			}
 			printf("]");
 			break;
 		case XP_BAR:
 			printf("[\033[8m\033[46m");
-			for(i = 0; i < ((P->xp*100)/P->xpStage)/5; i++){
+			for(i = 0; i < round(((P->xp*100)/P->xpStage)/5); i++){
 				printf("*");
 			}
 			printf("\033[0m");
-			for(i = 0; i < 20-((P->xp*100)/P->xpStage)/5; i++){
+			for(i = 0; i < my_round(20-((P->xp*100)/P->xpStage)/5); i++){
 				printf(" ");
 			}
 			printf("]");
@@ -120,6 +126,8 @@ void display_appears(){
 	printf("\t*  UN MONSTRE APPARAIT !  *\n");
 	printf("\t*                         *\n");
 	printf("\t***************************\n");
+	printf("\n--------------------------------------------------\n");
+
 }
 
 void display_you_lose(){
@@ -128,6 +136,8 @@ void display_you_lose(){
 	printf("\t*        YOU LOSE !       *\n");
 	printf("\t*                         *\n");
 	printf("\t***************************\n");
+	printf("\n--------------------------------------------------\n");
+
 }
 
 void display_run(){
@@ -136,6 +146,8 @@ void display_run(){
 	printf("\t* VOUS PRENEZ LA FUITE !  *\n");
 	printf("\t*                         *\n");
 	printf("\t***************************\n");
+	printf("\n--------------------------------------------------\n");
+
 }
 
 void display_victory(int lvlEarned, int xpEarned){
@@ -170,7 +182,7 @@ void display_text(int text_id){
 			printf("Vous attaquez ! \033[33mCoup Critique !\033[0m\n");
 			break;
 		case 3:
-			printf("Vous attaquez ! \033[31mEchec critique !\033[0m");
+			printf("Vous attaquez ! \033[31mEchec critique !\033[0m\n");
 			break;
 		case 4:
 			printf("Vous vous soignez !\n");

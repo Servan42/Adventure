@@ -6,6 +6,7 @@
 
 void display_header(pplayer P, int lifeChangePlayer);
 void display_monster(pmonster M, pplayer P, int lifeChangeMonster);
+double my_round(double a);
 void display_bar_player(pplayer P, int bar);
 void display_bar_monster(pmonster M);
 void display_appears();

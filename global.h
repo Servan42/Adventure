@@ -1,6 +1,8 @@
 #ifndef _GLOBAL_H
 #define _GLOBAL_H
 
+#include <math.h>
+
 typedef struct _player {
 	int hp;
 	unsigned int hpMax;

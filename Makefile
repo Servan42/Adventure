@@ -4,7 +4,7 @@ FLAGS= -Wall -g
 all : $(EXE)
 
 Adventure : main.o fight.o display_fight.o
-	gcc -o Adventure main.o fight.o display_fight.o
+	gcc -o Adventure main.o fight.o display_fight.o -lm
 
 main.o : main.c main.h fight.h global.h
 	gcc $(FLAGS) -c main.c main.h fight.h global.h
