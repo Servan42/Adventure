@@ -175,24 +175,53 @@ void display_victory(int lvlEarned, int xpEarned){
 
 }
 
+void display_console(int buffConsole[4][3], int text_id, int lifeChangePlayer, int lifeChangeMonster){
+	// Gerer les tableaux doubles
+	for(int i = 0; i < 4; i++){		
+		for(int j = 0; j < 3; j++){
+			buffConsole[i][j] = buffConsole[i+1][j];
+		}
+	}
 
-void display_text(int text_id){
+	buffConsole[3][0] = text_id;
+	buffConsole[3][1] = lifeChangePlayer;
+	buffConsole[3][2] = lifeChangeMonster;
 	printf("\n");
+	for(int i; i < 4; i++){
+		display_text(buffConsole[i][0], buffConsole[i][1], buffConsole[i][2]);
+	}
+	printf("\n");
+	display_split();
+}
+
+void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster){
 	switch(text_id){
 		case 0:
 			printf("A monster appears !\n");
 			break;
 		case 1:
-			printf("You attack the monster !\n");
+			printf("You attack the monster !");
+			printf(" Player : %d HP", lifeChangePlayer);
+		    printf(" | Monster : %d HP\n", lifeChangeMonster);
 			break;
 		case 2:
-			printf("You attack the monster ! \033[33mCritical hit !\033[0m\n");
+			printf("You attack the monster ! \033[33mCritical hit !\033[0m");
+			printf(" Player : %d HP", lifeChangePlayer);
+		    printf(" | Monster : %d HP\n", lifeChangeMonster);
 			break;
 		case 3:
-			printf("You attack the monster ! \033[31mYou miss !\033[0m\n");
+			printf("You attack the monster ! \033[31mYou miss !\033[0m");
+			printf(" Player : %d HP\n", lifeChangePlayer);
 			break;
 		case 4:
-			printf("You try to heal yourself !\n");
+			printf("You try to heal yourself !");
+			printf(" Player : ");
+			if(lifeChangePlayer > 0){
+		    	printf("+%d HP", lifeChangePlayer);
+		    } else if(lifeChangePlayer < 0){
+		    	printf("%d HP", lifeChangePlayer);
+		    }
+		    printf("\n");
 			break;
 		case 5:
         	printf("You fail to escape ! The monster catchs up with you and attacks you !\n");
@@ -200,9 +229,6 @@ void display_text(int text_id){
 		default:
 			printf("\n");
 	}
-	printf("\n");
-	display_split();
-
 }
 
 void display_monster_ascii(int nMonster){

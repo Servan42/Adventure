@@ -155,12 +155,19 @@ int fight(pplayer P){
     int monsterAlive = 1, playerAlive = 1;
     int lvlEarned = 0, xpEarned = 0;
     int fui = 0;
+    int buffConsole[4][3];
     pmonster M;
 
     int state = STATE_CHOICE;
     
     M = malloc(sizeof(monster));
     init_monster(M, P);
+    for(int i = 0; i < 4; i++){
+        buffConsole[i][0] = -1;
+        for(int j = 1; j < 3; j++){
+            buffConsole[i][j] = 0;
+        }
+    }
 
     // One-time introduction (one per monster)
     system("clear");
@@ -174,7 +181,7 @@ int fight(pplayer P){
                 system("clear");
                 display_header(P,lifeChangePlayer);
                 display_monster(M,P, lifeChangeMonster);
-                display_text(text_id);
+                display_console(buffConsole ,text_id, lifeChangePlayer, lifeChangeMonster);
                 action = action_choice();
                 switch(action){
                     case 1:

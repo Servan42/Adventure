@@ -15,7 +15,8 @@ void display_you_lose();
 void display_run();
 void display_victory(int lvlEarned, int xpEarned);
 void display_monster_ascii(int nMonster);
-void display_text(int text_id);
+void display_console(int buffConsole[4][3], int text_id, int lifeChangePlayer, int lifeChangeMonster);
+void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster);
 
 
 #endif
