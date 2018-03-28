@@ -26,8 +26,8 @@ int action_choice(){
 
     while(choice!='1' && choice!='2' && choice!='3')
     {
-        printf("\nQue faire ? : \n");
-        printf("1 : Attaquer\n2 : Se soigner\n3 : Fuir\n--> ");
+        printf("\n\033[1mWhat do you want to do ? : \033[0m\n");
+        printf("1 : Attack\n2 : Heal\n3 : Flee\n--> ");
         scanf("%c",&choice);
 		getchar();
     }

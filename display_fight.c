@@ -5,11 +5,15 @@
 #define HEALTH_BAR_PLAYER 1
 #define XP_BAR 2
 
+void display_split(){
+	printf("\033[40;8m----------------------------------------------------------------------\033[0m\n");	
+}
+
 void display_header(pplayer P, int lifeChangePlayer){
-	printf("--------------------------------------------------\n\n");
+	display_split();
 	printf("\033[1m%s\033[0m | ",P->playerName);
-	printf("Niveau : \033[96m%d\033[0m\n", P->lvl);
-	printf("Vie : %d/%d HP\n",P->hp,P->hpMax);
+	printf("\033[1mLevel :\033[0m \033[96m%d\033[0m\n", P->lvl);
+	printf("\033[1mHealth :\033[0m %d/%d HP\n",P->hp,P->hpMax);
 	
 	display_bar_player(P, HEALTH_BAR_PLAYER);
 	if(lifeChangePlayer > 0){
@@ -20,9 +24,9 @@ void display_header(pplayer P, int lifeChangePlayer){
     	printf("\n");
     }
 
-	printf("Experience : %0.0lf/%0.0lf XP\n",P->xp,P->xpStage);
+	printf("\033[1mExperience :\033[0m %0.0lf/%0.0lf XP\n",P->xp,P->xpStage);
 	display_bar_player(P, XP_BAR); printf("\n");
-	printf("\n--------------------------------------------------\n\n");
+	display_split(); printf("\n");
 }
 
 void display_monster(pmonster M, pplayer P, int lifeChangeMonster){
@@ -30,16 +34,16 @@ void display_monster(pmonster M, pplayer P, int lifeChangeMonster){
 	printf("\n");
     
     if((P->lvl + 1) == M->lvl){
-        printf("\nNiveau : \033[33m%d\033[0m\n",M->lvl);
+        printf("\n\033[1mLevel :\033[0m \033[33m%d\033[0m\n",M->lvl);
 	} else if(P->lvl < M->lvl){
-        printf("\nNiveau : \033[31m%d\033[0m\n",M->lvl);
+        printf("\n\033[1mLevel :\033[0m \033[31m%d\033[0m\n",M->lvl);
     } else if(P->lvl == M->lvl){
-        printf("\nNiveau : \033[32m%d\033[0m\n",M->lvl);
+        printf("\n\033[1mLevel :\033[0m \033[32m%d\033[0m\n",M->lvl);
 	} else {
-        printf("\nNiveau : %d\n",M->lvl);
+        printf("\n\033[1mLevel :\033[0m %d\n",M->lvl);
     }
 	
-	printf("Vie : %d/%d HP\n", M->hp, M->hpMax);
+	printf("\033[1mHealth :\033[0m %d/%d HP\n", M->hp, M->hpMax);
 	
 	display_bar_monster(M);
     if(lifeChangeMonster > 0){
@@ -52,7 +56,7 @@ void display_monster(pmonster M, pplayer P, int lifeChangeMonster){
 
 
 	printf("\n");
-	printf("--------------------------------------------------\n");
+	display_split();
 }
 
 double my_round(double a){
@@ -121,50 +125,53 @@ void display_bar_monster(pmonster M){
 }
 
 void display_appears(){
-	printf("\t***************************\n");
-	printf("\t*                         *\n");
-	printf("\t*  UN MONSTRE APPARAIT !  *\n");
-	printf("\t*                         *\n");
-	printf("\t***************************\n");
-	printf("\n--------------------------------------------------\n");
+	printf("\t\t***************************\n");
+	printf("\t\t*                         *\n");
+	printf("\t\t*   A MONSTER APPEARS !   *\n");
+	printf("\t\t*                         *\n");
+	printf("\t\t***************************\n");
+	printf("\n");
+	display_split();
 
 }
 
 void display_you_lose(){
-	printf("\t***************************\n");
-	printf("\t*                         *\n");
-	printf("\t*        YOU LOSE !       *\n");
-	printf("\t*                         *\n");
-	printf("\t***************************\n");
-	printf("\n--------------------------------------------------\n");
+	printf("\t\t***************************\n");
+	printf("\t\t*                         *\n");
+	printf("\t\t*        YOU LOSE !       *\n");
+	printf("\t\t*                         *\n");
+	printf("\t\t***************************\n");
+	printf("\n");
+	display_split();
 
 }
 
 void display_run(){
-	printf("\t***************************\n");
-	printf("\t*                         *\n");
-	printf("\t* VOUS PRENEZ LA FUITE !  *\n");
-	printf("\t*                         *\n");
-	printf("\t***************************\n");
-	printf("\n--------------------------------------------------\n");
+	printf("\t\t***************************\n");
+	printf("\t\t*                         *\n");
+	printf("\t\t*      YOU RUN AWAY !     *\n");
+	printf("\t\t*                         *\n");
+	printf("\t\t***************************\n");
+	printf("\n");
+	display_split();
 
 }
 
 void display_victory(int lvlEarned, int xpEarned){
-	printf("\t***************************\n");
-	printf("\t*                         *\n");
-	printf("\t*        YOU WIN !        *\n");
-	printf("\t*                         *\n");
-	printf("\t***************************\n");
+	printf("\t\t***************************\n");
+	printf("\t\t*                         *\n");
+	printf("\t\t*        YOU WIN !        *\n");
+	printf("\t\t*                         *\n");
+	printf("\t\t***************************\n");
 	printf("\n");
 	printf("\033[36m");
-	printf("Vous gagnez %d points d'experience.\n", xpEarned);
+	printf("Vous earned %d experience points.\n", xpEarned);
 	if(lvlEarned != 0){
-		if(lvlEarned == 1) printf("Vous gagnez %d niveau !\n", lvlEarned);
-		else printf("Vous gagnez %d niveaux !\n", lvlEarned);
+		if(lvlEarned == 1) printf("Level up !\n");
+		else printf("You earned %d levels !\n", lvlEarned);
 	}
 	printf("\033[0m\n");
-	printf("--------------------------------------------------\n");
+	display_split();
 
 }
 
@@ -173,27 +180,28 @@ void display_text(int text_id){
 	printf("\n");
 	switch(text_id){
 		case 0:
-			printf("Un monstre apparait !\n");
+			printf("A monster appears !\n");
 			break;
 		case 1:
-			printf("Vous attaquez !\n");
+			printf("You attack the monster !\n");
 			break;
 		case 2:
-			printf("Vous attaquez ! \033[33mCoup Critique !\033[0m\n");
+			printf("You attack the monster ! \033[33mCritical hit !\033[0m\n");
 			break;
 		case 3:
-			printf("Vous attaquez ! \033[31mEchec critique !\033[0m\n");
+			printf("You attack the monster ! \033[31mYou miss !\033[0m\n");
 			break;
 		case 4:
-			printf("Vous vous soignez !\n");
+			printf("You try to heal yourself !\n");
 			break;
 		case 5:
-        	printf("La fuite a echouee ! Le monstre vous rattrape et vous attaque !\n");
+        	printf("You fail to escape ! The monster catchs up with you and attacks you !\n");
         	break;
 		default:
 			printf("\n");
 	}
-	printf("\n--------------------------------------------------\n");
+	printf("\n");
+	display_split();
 
 }
 

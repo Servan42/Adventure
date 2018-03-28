@@ -4,6 +4,7 @@
 #include "global.h"
 #include "fight.h"
 
+void display_split();
 void display_header(pplayer P, int lifeChangePlayer);
 void display_monster(pmonster M, pplayer P, int lifeChangeMonster);
 double my_round(double a);
