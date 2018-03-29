@@ -1,5 +1,5 @@
 /**
-* @file fight.c
+* @file display_fight.c
 * @brief User interface of the programm.
 * @author CHARLOT Servan
 */
@@ -10,15 +10,30 @@
 
 /**
 * @def HEALTH_BAR_PLAYER
-* @brief
+* @brief Reference for the player's health bar
 */
 #define HEALTH_BAR_PLAYER 1
+/**
+* @def XP_BAR
+* @brief Reference for the experience bar
+*/
 #define XP_BAR 2
 
+/**
+* @fn void display_split()
+* @brief Displays a bar that simulate a split between the pannels. 
+*/
 void display_split(){
 	printf("\033[40;8m----------------------------------------------------------------------\033[0m\n");	
 }
 
+/**
+* @fn void display_header(pplayer P, int lifeChangePlayer)
+* @brief Displays the upper panel containing the following :
+*		 Name, level, health, health bar, experience, experience bar.
+* @param P Pointer on the player structure.
+* @param lifeChangePlayer By how many the player's life changed.
+*/
 void display_header(pplayer P, int lifeChangePlayer){
 	display_split();
 	printf("\033[1m%s\033[0m | ",P->playerName);
@@ -39,6 +54,13 @@ void display_header(pplayer P, int lifeChangePlayer){
 	display_split(); printf("\n");
 }
 
+/**
+* @fn void display_monster(pmonster M, pplayer P, int lifeChangeMonster)
+* @brief Displays the monster ascci, its level and its life.
+* @param M Pointer on the monster structure.
+* @param P Pointer on the player structure.
+* @param lifeChangeMonster By how many the player's life changed.
+*/
 void display_monster(pmonster M, pplayer P, int lifeChangeMonster){
 	display_monster_ascii(M->ascii);
 	printf("\n");
@@ -69,16 +91,29 @@ void display_monster(pmonster M, pplayer P, int lifeChangeMonster){
 	display_split();
 }
 
+/**
+* @fn double my_round(double a)
+* @brief Round a double value. Choose to floor is the value is x.5
+* @param a The value to round.
+* @return the rounded value.
+*/
 double my_round(double a){
 	int b = a - floor(a);
 	if(b == 0.5) return floor(a);
 	else return round(a);
 }
 
+/**
+* @fn void display_bar_player(pplayer P, int bar)
+* @brief Displays a 22 character long bar which dynamicaly moves (player).
+* @param P Pointer on the player structure.
+* @param bar Reference number for the bar to display (Health or xp. cf.macros)
+*/
 void display_bar_player(pplayer P, int bar){
 	int i;
 	switch(bar){
 		case HEALTH_BAR_PLAYER:
+			// Display the health bar
 			printf("[");
 			printf("\033[8m");
 			if(P->hp < P->hpMax/3){
@@ -99,6 +134,7 @@ void display_bar_player(pplayer P, int bar){
 			printf("]");
 			break;
 		case XP_BAR:
+			// Display the experience bar
 			printf("[\033[8m\033[46m");
 			for(i = 0; i < round(((P->xp*100)/P->xpStage)/5); i++){
 				printf("*");
@@ -112,6 +148,11 @@ void display_bar_player(pplayer P, int bar){
 	}
 }
 
+/**
+* @fn void display_bar_monster(pmonster M)
+* @brief Displays a 22 character long bar which dynamicaly moves (monster).
+* @param M Pointer on the monster structure.
+*/
 void display_bar_monster(pmonster M){
 	int i;
 	printf("[");
@@ -134,6 +175,10 @@ void display_bar_monster(pmonster M){
 	printf("]");
 }
 
+/**
+* @fn void display_appears()
+* @brief Displays the "A MONSTER APPEARS" title.
+*/
 void display_appears(){
 	printf("\t\t***************************\n");
 	printf("\t\t*                         *\n");
@@ -145,6 +190,10 @@ void display_appears(){
 
 }
 
+/**
+* @fn void display_you_lose()
+* @brief Displays the "YOU LOSE" title.
+*/
 void display_you_lose(){
 	printf("\t\t***************************\n");
 	printf("\t\t*                         *\n");
@@ -156,6 +205,10 @@ void display_you_lose(){
 
 }
 
+/**
+* @fn void display_run()
+* @brief Displays the "YOU RUN AWAY" title.
+*/
 void display_run(){
 	printf("\t\t***************************\n");
 	printf("\t\t*                         *\n");
@@ -167,6 +220,12 @@ void display_run(){
 
 }
 
+/**
+* @fn void display_victory(int lvlEarned, int xpEarned)
+* @brief Displays the "YOU WIN" title and the experience notifications.
+* @param lvlEarned Number of levels earned by the player when he killed the monster.
+* @param xpEarned Number of experience points earned by the player when he killed the monster.
+*/
 void display_victory(int lvlEarned, int xpEarned){
 	printf("\t\t***************************\n");
 	printf("\t\t*                         *\n");
@@ -185,17 +244,26 @@ void display_victory(int lvlEarned, int xpEarned){
 
 }
 
+/**
+* @fn void display_console(int buffConsole[4][3], int text_id, int lifeChangePlayer, int lifeChangeMonster)
+* @brief Displays the 4 lines of console/log in the pane under the monster.
+* @param buffConsole Arrays that contains the informations to display. 4 lines with 3 information each : text_id, lifeChangePLayer, lifeChangeMonster.
+* @param text_id Reference to the text that must be displayed in the console.
+* @param lifeChangePlayer By how many the player's life changed.
+* @param lifeChangeMonster By how many the monster's life changed.
+*/
 void display_console(int buffConsole[4][3], int text_id, int lifeChangePlayer, int lifeChangeMonster){
-	// Gerer les tableaux doubles
+	// Shift up the lines
 	for(int i = 0; i < 4; i++){		
 		for(int j = 0; j < 3; j++){
 			buffConsole[i][j] = buffConsole[i+1][j];
 		}
 	}
-
 	buffConsole[3][0] = text_id;
 	buffConsole[3][1] = lifeChangePlayer;
 	buffConsole[3][2] = lifeChangeMonster;
+	
+	// Displays the lines.
 	printf("\n");
 	for(int i; i < 4; i++){
 		display_text(buffConsole[i][0], buffConsole[i][1], buffConsole[i][2]);
@@ -204,6 +272,13 @@ void display_console(int buffConsole[4][3], int text_id, int lifeChangePlayer, i
 	display_split();
 }
 
+/**
+* @fn void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster)
+* @brief Display the line of text asked in text_id.
+* @param text_id Reference to the text that must be displayed in the console.
+* @param lifeChangePlayer By how many the player's life changed.
+* @param lifeChangeMonster By how many the monster's life changed.
+*/
 void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster){
 	switch(text_id){
 		case 0:
@@ -241,6 +316,11 @@ void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster){
 	}
 }
 
+/**
+* @fn void display_monster_ascii(int nMonster)
+* @brief Displays the ascci drawing of a monster.
+* @param nMonster Reference to the drawing to display.
+*/
 void display_monster_ascii(int nMonster){
     switch(nMonster)
     {

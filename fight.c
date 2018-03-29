@@ -10,11 +10,23 @@
 #include "fight.h"
 #include "display_fight.h"
 
-//Return a random number between [a;b];
+/**
+* @fn int alea(int a, int b)
+* @brief Return a random number between [a;b].
+* @param a Lower bound. Inclusive
+* @param b Upper bound. Inclusive
+* @return Random number between a and b.
+*/
 int alea(int a, int b){
     return (rand()%(b-a+1)+a);
 }
 
+/**
+* @fn void init_monster(pmonster M, pplayer P)
+* @brief Initiate the monster attributes.
+* @param M Pointer on the monster structure.
+* @param P Pointer on the player structure.
+*/
 void init_monster(pmonster M, pplayer P){
 	M->ascii = alea(1,5);
 
@@ -27,6 +39,11 @@ void init_monster(pmonster M, pplayer P){
 	M->hp = M->hpMax;
 }
 
+/**
+* @fn int action_choice()
+* @brief Asks the player which action he wants to do.
+* @return Number referencing the action.
+*/
 int action_choice(){
     char choice=0;
 
@@ -41,11 +58,21 @@ int action_choice(){
     return choice-'0';
 }
 
+/**
+* @fn void xp(pplayer P, pmonster M, int *number_of_level_earned, int *number_of_xp_earned)
+* @brief Gives experience to the player when he kills a monster.
+* @param P Pointer on the player structure.
+* @param M Pointer on the monster structure.
+* @param[out] number_of_level_earned At the end of the function, contains the number of levels the player earned.
+* @param[out] number_of_xp_earned At the end of the function, contains of xp points the player earned.
+*/
 void xp(pplayer P, pmonster M, int *number_of_level_earned, int *number_of_xp_earned){
     *number_of_level_earned = 0;
     *number_of_xp_earned = (10 * M->lvl * M->lvl * P->lvl);
     P->xpTotal = P->xpTotal + *number_of_xp_earned;
     P->xp += *number_of_xp_earned;
+    // Level up each time a level is passed.
+    // Reports remaining the experience on the next level.
     while(P->xp >= P->xpStage){
         P->xp -= P->xpStage;
         P->xpStage *= 2;
@@ -56,19 +83,29 @@ void xp(pplayer P, pmonster M, int *number_of_level_earned, int *number_of_xp_ea
     }
 }
 
+/**
+* @fn void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster)
+* @brief Computes all the life changes happening when the player trades damages with the monster. 
+* @param P Pointer on the player structure.
+* @param M Pointer on the monster structure.
+* @param[out] text_id Reference to the text that must be displayed by the UI.
+* @param[out] lifeChangePlayer Ends up containing by how many the player's life changed.
+* @param[out] lifeChangePlayer Ends up containing by how many the monster's life changed.
+*/
 void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster){
     int critical, damagesToPlayer,damagesToMonster;
     critical = alea(0,101);
 
     if(critical>=CC){
-    	*text_id = 2;
+    	// Player does a critical hit
+        *text_id = 2;
         
-		// Attaque du joueur        
+		// Player's attack
         damagesToMonster=alea(1*P->lvl,10*P->lvl)*2;
         M->hp=M->hp-damagesToMonster;
         if(M->hp < 0) M->hp = 0;
 
-        // Attaque du monstre
+        // Monster's attack
         damagesToPlayer=alea(1*M->lvl,10*M->lvl);
         P->hp=P->hp-damagesToPlayer;
         if(P->hp < 0) P->hp = 0;
@@ -76,9 +113,10 @@ void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lif
         *lifeChangePlayer = 0-damagesToPlayer;
         *lifeChangeMonster = 0-damagesToMonster;
     } else if (critical<=EC){
+        // Player miss
     	*text_id = 3;
 
-        // Attaque du monstre 
+        // Monster's attack 
         damagesToPlayer=alea(1*M->lvl,10*M->lvl);
         P->hp=P->hp-damagesToPlayer;
         if(P->hp < 0) P->hp = 0;
@@ -86,14 +124,15 @@ void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lif
         *lifeChangePlayer = 0-damagesToPlayer;
         *lifeChangeMonster = 0;
     } else {
+        // Normal damage trade.
     	*text_id = 1;
 
-    	// Attaque du monstre
+        // Monster's attack
         damagesToPlayer=alea(1*M->lvl,10*M->lvl);
         P->hp=P->hp-damagesToPlayer;
         if(P->hp < 0) P->hp = 0;
 
-		// Attaque du joueur
+        // Player's attack
         damagesToMonster=alea(1*P->lvl,10*P->lvl);
         M->hp=M->hp-damagesToMonster;
         if(M->hp < 0) M->hp = 0;
@@ -102,14 +141,23 @@ void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lif
         *lifeChangeMonster = 0-damagesToMonster;
     }
 
-
 }
 
+/**
+* @fn void heal(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster)
+* @brief Computes all the life changes happening when the player tries to heal himself. 
+* @param P Pointer on the player structure.
+* @param M Pointer on the monster structure.
+* @param[out] text_id Reference to the text that must be displayed by the UI.
+* @param[out] lifeChangePlayer Ends up containing by how many the player's life changed.
+* @param[out] lifeChangePlayer Ends up containing by how many the monster's life changed.
+*/
 void heal(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster){
     int heal,damagesToPlayer;
 
     *text_id = 4;
 
+    // Healing process
     heal = alea(5*P->lvl,10*P->lvl);
     P->hp=P->hp+heal;
     if (P->hp>=P->hpMax){
@@ -117,7 +165,7 @@ void heal(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeC
         P->hp=P->hpMax;
     }
 
-    // Monster attack
+    // Monster's attack
     damagesToPlayer=alea(1*M->lvl,10*M->lvl);
     P->hp=P->hp-damagesToPlayer;
     if(P->hp < 0) P->hp = 0;
@@ -126,13 +174,23 @@ void heal(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeC
     *lifeChangeMonster = 0;
 }
 
+/**
+* @fn void run(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster)
+* @brief Decide whether the player is able to run away or not.
+* @param P Pointer on the player structure.
+* @param M Pointer on the monster structure.
+* @param[out] text_id Reference to the text that must be displayed by the UI.
+* @param[out] lifeChangePlayer Ends up containing by how many the player's life changed.
+* @param[out] lifeChangePlayer Ends up containing by how many the monster's life changed.
+* @return 1 if the players succeed to run away, 0 otherwise.
+*/
 int run(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster){
     int fui,damagesToPlayer;
 
     fui=alea(0,101);
 
-    if(fui > FUITE)
-    {
+    if(fui > FUITE) {
+        // Flee successful
         M->hp = 0;
         *lifeChangePlayer = 0;
         *lifeChangeMonster = 0;
@@ -142,10 +200,10 @@ int run(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeCha
         getchar();
         return 1;
 
-    }
-    else
-    {
+    } else {
+        // Fails to flee
     	*text_id = 5;
+        // Monster's attack
         damagesToPlayer=alea(1*M->lvl,10*M->lvl);
         P->hp=P->hp-damagesToPlayer;
         if(P->hp < 0) P->hp = 0;
@@ -156,16 +214,26 @@ int run(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeCha
     }
 }
 
+/**
+* @fn int fight(pplayer P)
+* @brief Main loop for the fight against a monster.
+*        Contains the automaton of the fight.
+* @param P Pointer on the player structure.
+* @return 1 if the player is still alive, 0 otherwise.
+*/
 int fight(pplayer P){
     int action, lifeChangePlayer = 0, lifeChangeMonster = 0, text_id = 0;
     int monsterAlive = 1, playerAlive = 1;
     int lvlEarned = 0, xpEarned = 0;
     int fui = 0;
+    // The "console" are the 4 lines displayed under the monster pane.
+    // This array containe for each 4 line the 3 following values : 
+    // [i][0] = text_id, [i][1] = lifeChangePlayer, [i][2] = lifeChangeMonster
     int buffConsole[4][3];
     pmonster M;
 
+    // Initiation stuff
     states state = STATE_CHOICE;
-    
     M = malloc(sizeof(monster));
     init_monster(M, P);
     for(int i = 0; i < 4; i++){
@@ -182,8 +250,10 @@ int fight(pplayer P){
     getchar();
 
     while(monsterAlive && playerAlive){
+        // Fight automaton.
         switch(state){
             case STATE_CHOICE:
+                // Asking the player what he wants to do.
                 system("clear");
                 display_header(P,lifeChangePlayer);
                 display_monster(M,P, lifeChangeMonster);
@@ -202,6 +272,7 @@ int fight(pplayer P){
                 }
                 break;
             case STATE_ATTACK:
+                // PLayer chooses to attack
                 attack(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
                 if(P->hp == 0){
                     state = STATE_DEFEAT;
@@ -212,6 +283,7 @@ int fight(pplayer P){
                 }
                 break;
             case STATE_HEAL:
+                // Players chooses to heal himself
                 heal(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
                 if(P->hp == 0){
                     state = STATE_DEFEAT;
@@ -220,6 +292,7 @@ int fight(pplayer P){
                 }
                 break;
             case STATE_RUN:
+                // Player chooses to try to run away
                 fui = run(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
                 if(P->hp == 0){
                     state = STATE_DEFEAT;
@@ -230,9 +303,11 @@ int fight(pplayer P){
                 }
                 break;
             case STATE_RUN_SUCCESS:
+                // Flee successful
                 monsterAlive = 0;
                 break;
             case STATE_VICTORY:
+                // Monster is dead
                 monsterAlive = 0;          
                 xp(P, M, &lvlEarned, &xpEarned);
                 lifeChangePlayer = 0;
@@ -242,6 +317,7 @@ int fight(pplayer P){
                 getchar();
                 break;
             case STATE_DEFEAT:
+                // Player is dead
                 playerAlive = 0;
                 system("clear");
                 display_header(P,lifeChangePlayer);
