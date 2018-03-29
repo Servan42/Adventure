@@ -1,3 +1,9 @@
+/**
+* @file fight.c
+* @brief Functional core of the programm.
+* @author CHARLOT Servan
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

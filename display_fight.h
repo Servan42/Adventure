@@ -1,3 +1,7 @@
+/*
+* @author CHARLOT Servan
+*/
+
 #ifndef _DISPLAY_FIGHT_H
 #define _DISPLAY_FIGHT_H
 

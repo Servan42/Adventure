@@ -1,8 +1,18 @@
+/**
+* @file main.c
+* @author CHARLOT Servan
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include "main.h"
 
+/**
+* @fn void init_game(pplayer P)
+* @brief Asks the name of the player and initiate his structure.
+* @param Pointer on the player structure.
+*/
 void init_game(pplayer P){
 	printf("Welcome ! What is your name ?\n-->");
     scanf("%s",P->playerName);

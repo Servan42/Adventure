@@ -1,7 +1,17 @@
+/**
+* @file fight.c
+* @brief User interface of the programm.
+* @author CHARLOT Servan
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "display_fight.h"
 
+/**
+* @def HEALTH_BAR_PLAYER
+* @brief
+*/
 #define HEALTH_BAR_PLAYER 1
 #define XP_BAR 2
 

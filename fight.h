@@ -1,16 +1,27 @@
+/*
+* @author CHARLOT Servan
+*/
+
 #ifndef _FIGHT_H
 #define _FIGHT_H
 
 #include "global.h"
 
+/**
+* @struct _monster fight.h monster
+* @brief Monster attributes.
+*/
 typedef struct _monster {
-	int hp;
-	unsigned int hpMax;
-	unsigned int lvl;
-	int ascii;
+	int hp; /*!< Current health points */
+	unsigned int hpMax; /*!< Maximum number of health points */
+	unsigned int lvl; /*!< Current level */
+	int ascii; /*!< Number referencing an ASCII drawing in display_fight.h : display_monster_ascii(...)*/
 } monster, *pmonster;
 
-
+/**
+* @enum states
+* @brief States used in the automatons
+*/
 typedef enum {
 	STATE_CHOICE,
 	STATE_ATTACK,
