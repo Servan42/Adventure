@@ -216,7 +216,7 @@ void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster){
 		case 4:
 			printf("You try to heal yourself !");
 			printf(" Player : ");
-			if(lifeChangePlayer > 0){
+			if(lifeChangePlayer >= 0){
 		    	printf("+%d HP", lifeChangePlayer);
 		    } else if(lifeChangePlayer < 0){
 		    	printf("%d HP", lifeChangePlayer);

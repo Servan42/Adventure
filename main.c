@@ -4,7 +4,7 @@
 #include "main.h"
 
 void init_game(pplayer P){
-	printf("Bienvenue ! Quel est ton nom aventurier ?\n-->");
+	printf("Welcome ! What is your name ?\n-->");
     scanf("%s",P->playerName);
     getchar();
     system("clear");

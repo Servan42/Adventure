@@ -158,7 +158,7 @@ int fight(pplayer P){
     int buffConsole[4][3];
     pmonster M;
 
-    int state = STATE_CHOICE;
+    states state = STATE_CHOICE;
     
     M = malloc(sizeof(monster));
     init_monster(M, P);
