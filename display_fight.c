@@ -13,11 +13,18 @@
 * @brief Reference for the player's health bar
 */
 #define HEALTH_BAR_PLAYER 1
+
 /**
 * @def XP_BAR
 * @brief Reference for the experience bar
 */
 #define XP_BAR 2
+
+/**
+* @def MAGIC_BAR
+* @brief Reference for the magic bar
+*/
+#define MAGIC_BAR 3
 
 /**
 * @fn void display_split()
@@ -51,6 +58,10 @@ void display_header(pplayer P, int lifeChangePlayer){
 
 	printf("\033[1mExperience :\033[0m %0.0lf/%0.0lf XP\n",P->xp,P->xpStage);
 	display_bar_player(P, XP_BAR); printf("\n");
+
+	printf("\033[1mMagic :\033[0m %d/%d MP\n",P->magic,P->magicMax);
+	display_bar_player(P, MAGIC_BAR); printf("\n");
+
 	display_split(); printf("\n");
 }
 
@@ -135,12 +146,24 @@ void display_bar_player(pplayer P, int bar){
 			break;
 		case XP_BAR:
 			// Display the experience bar
-			printf("[\033[8m\033[46m");
+			printf("[\033[8m\033[45m");
 			for(i = 0; i < round(((P->xp*100)/P->xpStage)/5); i++){
 				printf("*");
 			}
 			printf("\033[0m");
 			for(i = 0; i < my_round(20-((P->xp*100)/P->xpStage)/5); i++){
+				printf(" ");
+			}
+			printf("]");
+			break;
+		case MAGIC_BAR:
+			// Display the experience bar
+			printf("[\033[8m\033[46m");
+			for(i = 0; i < round(((P->magic*100)/P->magicMax)/5); i++){
+				printf("*");
+			}
+			printf("\033[0m");
+			for(i = 0; i < my_round(20-((P->magic*100)/P->magicMax)/5); i++){
 				printf(" ");
 			}
 			printf("]");
@@ -233,7 +256,7 @@ void display_victory(int lvlEarned, int xpEarned){
 	printf("\t\t*                         *\n");
 	printf("\t\t***************************\n");
 	printf("\n");
-	printf("\033[36m");
+	printf("\033[35m");
 	printf("Vous earned %d experience points.\n", xpEarned);
 	if(lvlEarned != 0){
 		if(lvlEarned == 1) printf("Level up !\n");
@@ -310,6 +333,19 @@ void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster){
 			break;
 		case 5:
         	printf("You fail to escape ! The monster catchs up with you and attacks you !\n");
+        	break;
+        case 6:
+        	printf("You don't have enough magic points to cast a spell.\n");
+        	break;
+        case 7:
+        	printf("You start to focus and rise you hands...\n");
+        	break;
+        case 8:
+        	printf("You lower your hands and let the magic go away.\n");
+        	break;
+        case 9:
+        	printf("You cast a fireball ! ");
+        	printf("Monster : %d HP\n", lifeChangeMonster);
         	break;
 		default:
 			printf("\n");

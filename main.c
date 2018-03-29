@@ -19,11 +19,13 @@ void init_game(pplayer P){
     getchar();
     system("clear");
 
-    P->hp=50;
-    P->hpMax=50;
-    P->lvl=1;
-    P->xp=0;
-    P->xpStage=10;
+    P->hpMax = 50;
+    P->hp = P->hpMax;
+    P->magicMax = 100;
+    P->magic = P->magicMax;
+    P->lvl = 1;
+    P->xp = 0;
+    P->xpStage = 10;
 }
 
 int main(int argc, char const *argv[])
