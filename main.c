@@ -33,9 +33,13 @@ void init_game(pplayer P){
 int main(int argc, char const *argv[])
 {
     printf("----------------------------------------------------------\n");
-    printf("DISCLAIMER :\n");
-    printf("THIS RELEASE IS STILL IN DEVELOPEMENT\n");
-    printf("IT IS GLOBALY FUNCTIONAL BUT THE BALANCING ISN'T DONE YET.\n");
+    printf("DISCLAIMER :\n\n");
+    printf("This release is still in developement.\n");
+    printf("To play on a stable version, please checkout the Version 1.0\n\n");
+    printf("WORK IN PROGRESS : \n\n");
+    printf("The balancing is not done yet.\n");
+    printf("There is no way to earn magic points.\n");
+    printf("  -> A shop is going to be implemented in order to buy health and magic potions.\n");
     printf("----------------------------------------------------------\n\n");
 
 	pplayer P;

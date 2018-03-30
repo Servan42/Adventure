@@ -378,6 +378,23 @@ void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster){
         	printf("You cast a fireball ! ");
         	printf("Monster : %d HP\n", lifeChangeMonster);
         	break;
+        case 10:
+        	printf("You cast a shield to protect you.\n");
+        	break;
+        case 11:
+			printf("You attack the monster !");
+			printf(" Player : %d SP", lifeChangePlayer);
+		    printf(" | Monster : %d HP\n", lifeChangeMonster);
+			break;
+		case 12:
+			printf("You attack the monster ! \033[33mCritical hit !\033[0m");
+			printf(" Player : %d SP", lifeChangePlayer);
+		    printf(" | Monster : %d HP\n", lifeChangeMonster);
+			break;
+		case 13:
+			printf("You attack the monster ! \033[31mYou miss !\033[0m");
+			printf(" Player : %d SP\n", lifeChangePlayer);
+			break;
 		default:
 			printf("\n");
 	}

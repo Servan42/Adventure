@@ -162,6 +162,7 @@ void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lif
 
     // Monster's attack
     monster_attack(P, M, &damagesToPlayer);
+    if(P->shield > 0) *text_id = 11 + (*text_id - 1);
 
     *lifeChangePlayer = 0-damagesToPlayer;
 }
@@ -225,7 +226,6 @@ int run(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeCha
 
     } else {
         // Fails to flee
-        // TODO gerer le text_id avec shield
     	*text_id = 5;
         // Monster's attack
         monster_attack(P, M, &damagesToPlayer);
@@ -384,7 +384,7 @@ int fight(pplayer P){
                 break;
 
             case STATE_SHIELD:
-                // TODO gerer txt_id
+                text_id = 10;
                 P->shield = P->shieldMax;
                 monster_attack(P, M, &damagesToPlayer);
                 lifeChangePlayer = 0-damagesToPlayer;
