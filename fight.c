@@ -52,7 +52,7 @@ int action_choice(){
         printf("\n\033[1mWhat do you want to do ? : \033[0m\n");
         printf("1 : Attack\n2 : Spell\n3 : Flee\n--> ");
         scanf("%c",&choice);
-		getchar();
+		if(choice != '\n') getchar();
     }
 
     return choice-'0';
@@ -69,9 +69,9 @@ int spell_choice(){
     while(choice!='1' && choice!='2' && choice!='3' && choice!='4')
     {
         printf("\n\033[1mWhich spell do you want to cast ? : \033[0m\n");
-        printf("1 : Fireball\n2 : Heal\n3 : Sheild\n4 : Back\n--> ");
+        printf("1 : Fireball\n2 : Heal\n3 : Shield\n4 : Back\n--> ");
         scanf("%c",&choice);
-        getchar();
+        if(choice != '\n') getchar();
     }
 
     return choice-'0';
