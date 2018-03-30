@@ -27,6 +27,13 @@
 #define MAGIC_BAR 3
 
 /**
+* @def SHIELD_BAR
+* @brief Reference for the magic bar
+*/
+#define SHIELD_BAR 4
+
+
+/**
 * @fn void display_split()
 * @brief Displays a bar that simulate a split between the pannels. 
 */
@@ -48,13 +55,25 @@ void display_header(pplayer P, int lifeChangePlayer){
 	printf("\033[1mHealth :\033[0m %d/%d HP\n",P->hp,P->hpMax);
 	
 	display_bar_player(P, HEALTH_BAR_PLAYER);
-	if(lifeChangePlayer > 0){
-    	printf("\033[32m +%d\033[0m HP\n", lifeChangePlayer);
-    } else if(lifeChangePlayer < 0){
-    	printf("\033[31m %d\033[0m HP\n", lifeChangePlayer);
-    } else {
-    	printf("\n");
-    }
+	if(P->shield > 0){
+		printf(" | \033[1mShield :\033[0m ");
+		display_bar_player(P, SHIELD_BAR);
+		if(lifeChangePlayer > 0){
+	    	printf("\033[32m +%d\033[0m HP\n", lifeChangePlayer);
+	    } else if(lifeChangePlayer < 0){
+	    	printf("\033[31m %d\033[0m SP\n", lifeChangePlayer);
+	    } else {
+	    	printf("\n");
+	    }
+	} else {	
+		if(lifeChangePlayer > 0){
+	    	printf("\033[32m +%d\033[0m HP\n", lifeChangePlayer);
+	    } else if(lifeChangePlayer < 0){
+	    	printf("\033[31m %d\033[0m HP\n", lifeChangePlayer);
+	    } else {
+	    	printf("\n");
+	    }
+	}
 
 	printf("\033[1mExperience :\033[0m %0.0lf/%0.0lf XP\n",P->xp,P->xpStage);
 	display_bar_player(P, XP_BAR); printf("\n");
@@ -164,6 +183,18 @@ void display_bar_player(pplayer P, int bar){
 			}
 			printf("\033[0m");
 			for(i = 0; i < my_round(20-((P->magic*100)/P->magicMax)/5); i++){
+				printf(" ");
+			}
+			printf("]");
+			break;
+		case SHIELD_BAR:
+			// Display the shield bar
+			printf("[\033[8m\033[7m");
+			for(i = 0; i < round(((P->shield*100)/P->shieldMax)/5); i++){
+				printf("*");
+			}
+			printf("\033[0m");
+			for(i = 0; i < my_round(20-((P->shield*100)/P->shieldMax)/5); i++){
 				printf(" ");
 			}
 			printf("]");

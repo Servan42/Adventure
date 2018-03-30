@@ -103,6 +103,23 @@ void xp(pplayer P, pmonster M, int *number_of_level_earned, int *number_of_xp_ea
     }
 }
 
+void monster_attack(pplayer P, pmonster M, int *damagesToPlayer){
+    // Monster's attack
+    *damagesToPlayer=alea(1*M->lvl,10*M->lvl);
+    if(P->shield > 0){
+        P->shield = P->shield - *damagesToPlayer;
+        if(P->shield < 0){
+            *damagesToPlayer = abs(P->shield);
+            P->shield = 0;
+            P->hp=P->hp-*damagesToPlayer;
+            if(P->hp < 0) P->hp = 0;
+        } 
+    } else {        
+        P->hp=P->hp-*damagesToPlayer;
+        if(P->hp < 0) P->hp = 0;
+    }
+}
+
 /**
 * @fn void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster)
 * @brief Computes all the life changes happening when the player trades damages with the monster. 
@@ -116,6 +133,8 @@ void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lif
     int critical, damagesToPlayer,damagesToMonster;
     critical = alea(0,101);
 
+    // TODO gerer le text_id avec shield
+
     if(critical>=CC){
     	// Player does a critical hit
         *text_id = 2;
@@ -125,42 +144,26 @@ void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lif
         M->hp=M->hp-damagesToMonster;
         if(M->hp < 0) M->hp = 0;
 
-        // Monster's attack
-        damagesToPlayer=alea(1*M->lvl,10*M->lvl);
-        P->hp=P->hp-damagesToPlayer;
-        if(P->hp < 0) P->hp = 0;
-
-        *lifeChangePlayer = 0-damagesToPlayer;
         *lifeChangeMonster = 0-damagesToMonster;
     } else if (critical<=EC){
         // Player miss
     	*text_id = 3;
-
-        // Monster's attack 
-        damagesToPlayer=alea(1*M->lvl,10*M->lvl);
-        P->hp=P->hp-damagesToPlayer;
-        if(P->hp < 0) P->hp = 0;
-
-        *lifeChangePlayer = 0-damagesToPlayer;
         *lifeChangeMonster = 0;
     } else {
         // Normal damage trade.
     	*text_id = 1;
-
-        // Monster's attack
-        damagesToPlayer=alea(1*M->lvl,10*M->lvl);
-        P->hp=P->hp-damagesToPlayer;
-        if(P->hp < 0) P->hp = 0;
-
         // Player's attack
         damagesToMonster=alea(1*P->lvl,10*P->lvl);
         M->hp=M->hp-damagesToMonster;
         if(M->hp < 0) M->hp = 0;
 
-        *lifeChangePlayer = 0-damagesToPlayer;
         *lifeChangeMonster = 0-damagesToMonster;
     }
 
+    // Monster's attack
+    monster_attack(P, M, &damagesToPlayer);
+
+    *lifeChangePlayer = 0-damagesToPlayer;
 }
 
 /**
@@ -175,6 +178,7 @@ void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lif
 void heal(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster){
     int heal,damagesToPlayer;
 
+    // TODO gerer le text_id avec shield
     *text_id = 4;
 
     // Healing process
@@ -186,10 +190,9 @@ void heal(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeC
     }
 
     // Monster's attack
-    damagesToPlayer=alea(1*M->lvl,10*M->lvl);
-    P->hp=P->hp-damagesToPlayer;
-    if(P->hp < 0) P->hp = 0;
+    monster_attack(P, M, &damagesToPlayer);
 
+    // TODO return un bon affichage avec la valeur de heal si jamais il y a un shield
     *lifeChangePlayer = heal-damagesToPlayer;
     *lifeChangeMonster = 0;
 }
@@ -222,11 +225,10 @@ int run(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeCha
 
     } else {
         // Fails to flee
+        // TODO gerer le text_id avec shield
     	*text_id = 5;
         // Monster's attack
-        damagesToPlayer=alea(1*M->lvl,10*M->lvl);
-        P->hp=P->hp-damagesToPlayer;
-        if(P->hp < 0) P->hp = 0;
+        monster_attack(P, M, &damagesToPlayer);
 
         *lifeChangePlayer = 0-damagesToPlayer;
         *lifeChangeMonster = 0;
@@ -268,6 +270,7 @@ int fight(pplayer P){
     int monsterAlive = 1, playerAlive = 1;
     int lvlEarned = 0, xpEarned = 0;
     int fui = 0;
+    int damagesToPlayer;
     // The "console" are the 4 lines displayed under the monster pane.
     // This array containe for each 4 line the 3 following values : 
     // [i][0] = text_id, [i][1] = lifeChangePlayer, [i][2] = lifeChangeMonster
@@ -381,7 +384,11 @@ int fight(pplayer P){
                 break;
 
             case STATE_SHIELD:
-                // TODO
+                // TODO gerer txt_id
+                P->shield = P->shieldMax;
+                monster_attack(P, M, &damagesToPlayer);
+                lifeChangePlayer = 0-damagesToPlayer;
+                state = STATE_CHOICE;
                 break;
 
             case STATE_RUN:

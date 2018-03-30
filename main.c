@@ -23,6 +23,8 @@ void init_game(pplayer P){
     P->hp = P->hpMax;
     P->magicMax = 100;
     P->magic = P->magicMax;
+    P->shieldMax = P->hpMax;
+    P->shield = 0;
     P->lvl = 1;
     P->xp = 0;
     P->xpStage = 10;

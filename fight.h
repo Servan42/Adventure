@@ -40,6 +40,7 @@ void init_monster(pmonster M, pplayer P);
 int action_choice();
 int spell_choice();
 void xp(pplayer P, pmonster M, int *number_of_level_earned, int *number_of_xp_earned);
+void monster_attack(pplayer P, pmonster M, int *damagesToPlayer);
 void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster);
 void heal(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster);
 int run(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster);
