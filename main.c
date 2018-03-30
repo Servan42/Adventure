@@ -32,6 +32,12 @@ void init_game(pplayer P){
 
 int main(int argc, char const *argv[])
 {
+    printf("----------------------------------------------------------\n");
+    printf("DISCLAIMER :\n");
+    printf("THIS RELEASE IS STILL IN DEVELOPEMENT\n");
+    printf("IT IS GLOBALY FUNCTIONAL BUT THE BALANCING ISN'T DONE YET.\n");
+    printf("----------------------------------------------------------\n\n");
+
 	pplayer P;
 	int playerAlive = 1;
     srand(time(NULL));
