@@ -96,10 +96,11 @@ void xp(pplayer P, pmonster M, int *number_of_level_earned, int *number_of_xp_ea
         P->xp -= P->xpStage;
         P->xpStage *= 2;
         (P->lvl)++;
+        (*number_of_level_earned)++;
         P->hpMax = 50 * P->lvl;
+        P->shieldMax = P->hpMax;
         P->hp = P->hpMax;
         P->magic = P->magicMax;
-        (*number_of_level_earned)++;
     }
 }
 
@@ -177,9 +178,6 @@ void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lif
 void heal(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster){
     int heal,damagesToPlayer;
 
-    // TODO gerer le text_id avec shield
-    *text_id = 4;
-
     // Healing process
     heal = alea(5*P->lvl,10*P->lvl);
     P->hp=P->hp+heal;
@@ -187,13 +185,21 @@ void heal(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeC
         heal=heal-(P->hp-P->hpMax);
         P->hp=P->hpMax;
     }
-
     // Monster's attack
     monster_attack(P, M, &damagesToPlayer);
 
-    // TODO return un bon affichage avec la valeur de heal si jamais il y a un shield
-    *lifeChangePlayer = heal-damagesToPlayer;
-    *lifeChangeMonster = 0;
+    if(P->shield > 0){
+        // Damages to the shield
+        *text_id = 14;
+        *lifeChangePlayer = 0-damagesToPlayer;
+        // Max Heal
+        *lifeChangeMonster = heal;
+
+    } else {
+        *text_id = 4;
+        *lifeChangePlayer = heal-damagesToPlayer;
+        *lifeChangeMonster = 0;
+    }
 }
 
 /**
@@ -374,6 +380,11 @@ int fight(pplayer P){
 
             case STATE_HEAL:
                 heal(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
+                // Keeping the heal max value in a line that is going to get erased
+                // in the buffer. Dirty but optimised.
+                buffConsole[0][0] = lifeChangeMonster;
+                // Putting it again at it's normal value.
+                lifeChangeMonster = 0;
                 if(P->hp == 0){
                     state = STATE_DEFEAT;
                 } else {

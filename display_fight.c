@@ -307,15 +307,24 @@ void display_victory(int lvlEarned, int xpEarned){
 * @param lifeChangeMonster By how many the monster's life changed.
 */
 void display_console(int buffConsole[4][3], int text_id, int lifeChangePlayer, int lifeChangeMonster){
+	int heal;
+	if(text_id == 14){
+		heal = buffConsole[0][0];
+	}
+
 	// Shift up the lines
-	for(int i = 0; i < 4; i++){		
+	for(int i = 0; i < 3; i++){		
 		for(int j = 0; j < 3; j++){
 			buffConsole[i][j] = buffConsole[i+1][j];
 		}
 	}
 	buffConsole[3][0] = text_id;
 	buffConsole[3][1] = lifeChangePlayer;
-	buffConsole[3][2] = lifeChangeMonster;
+	if(text_id == 14){
+		buffConsole[3][2] = heal;
+	} else {
+		buffConsole[3][2] = lifeChangeMonster;
+	}
 	
 	// Displays the lines.
 	printf("\n");
@@ -394,6 +403,10 @@ void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster){
 		case 13:
 			printf("You attack the monster ! \033[31mYou miss !\033[0m");
 			printf(" Player : %d SP\n", lifeChangePlayer);
+			break;
+		case 14:
+			printf("You heal yourself !");
+			printf(" Player : +%d HP | Player's shield : %d SP\n", lifeChangeMonster, lifeChangePlayer);
 			break;
 		default:
 			printf("\n");
