@@ -133,8 +133,6 @@ void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lif
     int critical, damagesToPlayer,damagesToMonster;
     critical = alea(0,101);
 
-    // TODO gerer le text_id avec shield
-
     if(critical>=CC){
     	// Player does a critical hit
         *text_id = 2;
