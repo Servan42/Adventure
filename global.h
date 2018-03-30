@@ -15,6 +15,10 @@ typedef struct _player {
 	int hp; /*!< Current health points */
 	unsigned int hpMax; /*!< Maximum health points */
 	unsigned int lvl; /*!< Level */
+    unsigned int magicMax; /*!< Maximum Magic points */
+	int magic; /*!< Magic points */
+	unsigned int shieldMax; /*!< Maximum shield points */
+	int shield; /*!< Shield points */
 	double xpTotal; /*!< Total of experience earned from the beginning */
 	double xp; /*!< Experience in the current level */
 	double xpStage; /*!< Experience value tu reach in order to level up */

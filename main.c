@@ -19,15 +19,29 @@ void init_game(pplayer P){
     getchar();
     system("clear");
 
-    P->hp=50;
-    P->hpMax=50;
-    P->lvl=1;
-    P->xp=0;
-    P->xpStage=10;
+    P->hpMax = 50;
+    P->hp = P->hpMax;
+    P->magicMax = 5;
+    P->magic = P->magicMax;
+    P->shieldMax = P->hpMax;
+    P->shield = 0;
+    P->lvl = 1;
+    P->xp = 0;
+    P->xpStage = 10;
 }
 
 int main(int argc, char const *argv[])
 {
+    printf("----------------------------------------------------------\n");
+    printf("DISCLAIMER :\n\n");
+    printf("This release is still in developement.\n");
+    printf("To play on a stable version, please checkout the Version 1.0\n\n");
+    printf("WORK IN PROGRESS : \n\n");
+    printf("The balancing is not done yet.\n");
+    printf("There is no way to earn magic points.\n");
+    printf("  -> A shop is going to be implemented in order to buy health and magic potions.\n");
+    printf("----------------------------------------------------------\n\n");
+
 	pplayer P;
 	int playerAlive = 1;
     srand(time(NULL));

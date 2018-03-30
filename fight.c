@@ -50,9 +50,28 @@ int action_choice(){
     while(choice!='1' && choice!='2' && choice!='3')
     {
         printf("\n\033[1mWhat do you want to do ? : \033[0m\n");
-        printf("1 : Attack\n2 : Heal\n3 : Flee\n--> ");
+        printf("1 : Attack\n2 : Spell\n3 : Flee\n--> ");
         scanf("%c",&choice);
-		getchar();
+		if(choice != '\n') getchar();
+    }
+
+    return choice-'0';
+}
+
+/**
+* @fn int spell_choice()
+* @brief Asks the player which action he wants to do.
+* @return Number referencing the action.
+*/
+int spell_choice(){
+    char choice=0;
+
+    while(choice!='1' && choice!='2' && choice!='3' && choice!='4')
+    {
+        printf("\n\033[1mWhich spell do you want to cast ? : \033[0m\n");
+        printf("1 : Fireball\n2 : Heal\n3 : Shield\n4 : Back\n--> ");
+        scanf("%c",&choice);
+        if(choice != '\n') getchar();
     }
 
     return choice-'0';
@@ -77,9 +96,28 @@ void xp(pplayer P, pmonster M, int *number_of_level_earned, int *number_of_xp_ea
         P->xp -= P->xpStage;
         P->xpStage *= 2;
         (P->lvl)++;
-        P->hpMax = 50 * P->lvl;
-        P->hp = P->hpMax;
         (*number_of_level_earned)++;
+        P->hpMax = 50 * P->lvl;
+        P->shieldMax = P->hpMax;
+        P->hp = P->hpMax;
+        P->magic = P->magicMax;
+    }
+}
+
+void monster_attack(pplayer P, pmonster M, int *damagesToPlayer){
+    // Monster's attack
+    *damagesToPlayer=alea(1*M->lvl,10*M->lvl);
+    if(P->shield > 0){
+        P->shield = P->shield - *damagesToPlayer;
+        if(P->shield < 0){
+            *damagesToPlayer = abs(P->shield);
+            P->shield = 0;
+            P->hp=P->hp-*damagesToPlayer;
+            if(P->hp < 0) P->hp = 0;
+        } 
+    } else {        
+        P->hp=P->hp-*damagesToPlayer;
+        if(P->hp < 0) P->hp = 0;
     }
 }
 
@@ -105,42 +143,27 @@ void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lif
         M->hp=M->hp-damagesToMonster;
         if(M->hp < 0) M->hp = 0;
 
-        // Monster's attack
-        damagesToPlayer=alea(1*M->lvl,10*M->lvl);
-        P->hp=P->hp-damagesToPlayer;
-        if(P->hp < 0) P->hp = 0;
-
-        *lifeChangePlayer = 0-damagesToPlayer;
         *lifeChangeMonster = 0-damagesToMonster;
     } else if (critical<=EC){
         // Player miss
     	*text_id = 3;
-
-        // Monster's attack 
-        damagesToPlayer=alea(1*M->lvl,10*M->lvl);
-        P->hp=P->hp-damagesToPlayer;
-        if(P->hp < 0) P->hp = 0;
-
-        *lifeChangePlayer = 0-damagesToPlayer;
         *lifeChangeMonster = 0;
     } else {
         // Normal damage trade.
     	*text_id = 1;
-
-        // Monster's attack
-        damagesToPlayer=alea(1*M->lvl,10*M->lvl);
-        P->hp=P->hp-damagesToPlayer;
-        if(P->hp < 0) P->hp = 0;
-
         // Player's attack
         damagesToMonster=alea(1*P->lvl,10*P->lvl);
         M->hp=M->hp-damagesToMonster;
         if(M->hp < 0) M->hp = 0;
 
-        *lifeChangePlayer = 0-damagesToPlayer;
         *lifeChangeMonster = 0-damagesToMonster;
     }
 
+    // Monster's attack
+    monster_attack(P, M, &damagesToPlayer);
+    if(P->shield > 0) *text_id = 11 + (*text_id - 1);
+
+    *lifeChangePlayer = 0-damagesToPlayer;
 }
 
 /**
@@ -155,8 +178,6 @@ void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lif
 void heal(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster){
     int heal,damagesToPlayer;
 
-    *text_id = 4;
-
     // Healing process
     heal = alea(5*P->lvl,10*P->lvl);
     P->hp=P->hp+heal;
@@ -164,14 +185,21 @@ void heal(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeC
         heal=heal-(P->hp-P->hpMax);
         P->hp=P->hpMax;
     }
-
     // Monster's attack
-    damagesToPlayer=alea(1*M->lvl,10*M->lvl);
-    P->hp=P->hp-damagesToPlayer;
-    if(P->hp < 0) P->hp = 0;
+    monster_attack(P, M, &damagesToPlayer);
 
-    *lifeChangePlayer = heal-damagesToPlayer;
-    *lifeChangeMonster = 0;
+    if(P->shield > 0){
+        // Damages to the shield
+        *text_id = 14;
+        *lifeChangePlayer = 0-damagesToPlayer;
+        // Max Heal
+        *lifeChangeMonster = heal;
+
+    } else {
+        *text_id = 4;
+        *lifeChangePlayer = heal-damagesToPlayer;
+        *lifeChangeMonster = 0;
+    }
 }
 
 /**
@@ -204,14 +232,34 @@ int run(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeCha
         // Fails to flee
     	*text_id = 5;
         // Monster's attack
-        damagesToPlayer=alea(1*M->lvl,10*M->lvl);
-        P->hp=P->hp-damagesToPlayer;
-        if(P->hp < 0) P->hp = 0;
+        monster_attack(P, M, &damagesToPlayer);
 
         *lifeChangePlayer = 0-damagesToPlayer;
         *lifeChangeMonster = 0;
         return 0;
     }
+}
+
+/**
+* @fn void fireball(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster)
+* @brief Computes all the life changes happening when the player casts a fireball. 
+* @param P Pointer on the player structure.
+* @param M Pointer on the monster structure.
+* @param[out] text_id Reference to the text that must be displayed by the UI.
+* @param[out] lifeChangePlayer Ends up containing by how many the player's life changed.
+* @param[out] lifeChangePlayer Ends up containing by how many the monster's life changed.
+*/
+void fireball(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster){
+    int damagesToMonster;
+
+    *text_id = 9;
+
+    // Player's attack
+    damagesToMonster=2*alea(1*P->lvl,10*P->lvl);
+    M->hp=M->hp-damagesToMonster;
+    if(M->hp < 0) M->hp = 0;
+
+    *lifeChangeMonster = 0-damagesToMonster;
 }
 
 /**
@@ -226,6 +274,7 @@ int fight(pplayer P){
     int monsterAlive = 1, playerAlive = 1;
     int lvlEarned = 0, xpEarned = 0;
     int fui = 0;
+    int damagesToPlayer;
     // The "console" are the 4 lines displayed under the monster pane.
     // This array containe for each 4 line the 3 following values : 
     // [i][0] = text_id, [i][1] = lifeChangePlayer, [i][2] = lifeChangeMonster
@@ -264,13 +313,14 @@ int fight(pplayer P){
                         state = STATE_ATTACK;
                         break;
                     case 2:
-                        state = STATE_HEAL;
+                        state = STATE_SPELL;
                         break;
                     case 3:
                         state = STATE_RUN;
                         break;
                 }
                 break;
+
             case STATE_ATTACK:
                 // PLayer chooses to attack
                 attack(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
@@ -282,15 +332,74 @@ int fight(pplayer P){
                     state = STATE_CHOICE;
                 }
                 break;
+
+            case STATE_SPELL:
+                // Players chooses to cast a spell
+                system("clear");
+                display_header(P,lifeChangePlayer);
+                display_monster(M,P, lifeChangeMonster);
+                if(P->magic == 0){
+                    text_id = 6;
+                    state = STATE_CHOICE;
+                } else {
+                    text_id = 7;
+                    display_console(buffConsole ,text_id, lifeChangePlayer, lifeChangeMonster);
+                    action = spell_choice();
+                    switch(action){
+                        case 1:
+                            (P->magic)--;
+                            state = STATE_FIREBALL;
+                            break;
+                        case 2:
+                            (P->magic)--;
+                            state = STATE_HEAL;
+                            break;
+                        case 3:
+                            (P->magic)--;
+                            state = STATE_SHIELD;
+                            break;
+                        case 4:
+                            text_id = 8;
+                            state = STATE_CHOICE;
+                            break;
+                    }
+                }
+                break;
+
+            case STATE_FIREBALL:
+                // The player choses to cast a fireball
+                fireball(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
+                if(P->hp == 0){
+                    state = STATE_DEFEAT;
+                } else if(M->hp == 0){
+                    state = STATE_VICTORY;
+                } else {
+                    state = STATE_CHOICE;
+                }
+                break;
+
             case STATE_HEAL:
-                // Players chooses to heal himself
                 heal(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
+                // Keeping the heal max value in a line that is going to get erased
+                // in the buffer. Dirty but optimised.
+                buffConsole[0][0] = lifeChangeMonster;
+                // Putting it again at it's normal value.
+                lifeChangeMonster = 0;
                 if(P->hp == 0){
                     state = STATE_DEFEAT;
                 } else {
                     state = STATE_CHOICE;
                 }
                 break;
+
+            case STATE_SHIELD:
+                text_id = 10;
+                P->shield = P->shieldMax;
+                monster_attack(P, M, &damagesToPlayer);
+                lifeChangePlayer = 0-damagesToPlayer;
+                state = STATE_CHOICE;
+                break;
+
             case STATE_RUN:
                 // Player chooses to try to run away
                 fui = run(P, M, &text_id, &lifeChangePlayer, &lifeChangeMonster);
@@ -302,10 +411,12 @@ int fight(pplayer P){
                     state = STATE_RUN_SUCCESS;
                 }
                 break;
+
             case STATE_RUN_SUCCESS:
                 // Flee successful
                 monsterAlive = 0;
                 break;
+
             case STATE_VICTORY:
                 // Monster is dead
                 monsterAlive = 0;          
@@ -316,6 +427,7 @@ int fight(pplayer P){
                 display_victory(lvlEarned,xpEarned);
                 getchar();
                 break;
+
             case STATE_DEFEAT:
                 // Player is dead
                 playerAlive = 0;

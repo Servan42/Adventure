@@ -13,11 +13,25 @@
 * @brief Reference for the player's health bar
 */
 #define HEALTH_BAR_PLAYER 1
+
 /**
 * @def XP_BAR
 * @brief Reference for the experience bar
 */
 #define XP_BAR 2
+
+/**
+* @def MAGIC_BAR
+* @brief Reference for the magic bar
+*/
+#define MAGIC_BAR 3
+
+/**
+* @def SHIELD_BAR
+* @brief Reference for the magic bar
+*/
+#define SHIELD_BAR 4
+
 
 /**
 * @fn void display_split()
@@ -41,16 +55,32 @@ void display_header(pplayer P, int lifeChangePlayer){
 	printf("\033[1mHealth :\033[0m %d/%d HP\n",P->hp,P->hpMax);
 	
 	display_bar_player(P, HEALTH_BAR_PLAYER);
-	if(lifeChangePlayer > 0){
-    	printf("\033[32m +%d\033[0m HP\n", lifeChangePlayer);
-    } else if(lifeChangePlayer < 0){
-    	printf("\033[31m %d\033[0m HP\n", lifeChangePlayer);
-    } else {
-    	printf("\n");
-    }
+	if(P->shield > 0){
+		printf(" | \033[1mShield :\033[0m ");
+		display_bar_player(P, SHIELD_BAR);
+		if(lifeChangePlayer > 0){
+	    	printf("\033[32m +%d\033[0m HP\n", lifeChangePlayer);
+	    } else if(lifeChangePlayer < 0){
+	    	printf("\033[31m %d\033[0m SP\n", lifeChangePlayer);
+	    } else {
+	    	printf("\n");
+	    }
+	} else {	
+		if(lifeChangePlayer > 0){
+	    	printf("\033[32m +%d\033[0m HP\n", lifeChangePlayer);
+	    } else if(lifeChangePlayer < 0){
+	    	printf("\033[31m %d\033[0m HP\n", lifeChangePlayer);
+	    } else {
+	    	printf("\n");
+	    }
+	}
 
 	printf("\033[1mExperience :\033[0m %0.0lf/%0.0lf XP\n",P->xp,P->xpStage);
 	display_bar_player(P, XP_BAR); printf("\n");
+
+	printf("\033[1mMagic :\033[0m %d/%d MP\n",P->magic,P->magicMax);
+	display_bar_player(P, MAGIC_BAR); printf("\n");
+
 	display_split(); printf("\n");
 }
 
@@ -135,12 +165,36 @@ void display_bar_player(pplayer P, int bar){
 			break;
 		case XP_BAR:
 			// Display the experience bar
-			printf("[\033[8m\033[46m");
+			printf("[\033[8m\033[45m");
 			for(i = 0; i < round(((P->xp*100)/P->xpStage)/5); i++){
 				printf("*");
 			}
 			printf("\033[0m");
 			for(i = 0; i < my_round(20-((P->xp*100)/P->xpStage)/5); i++){
+				printf(" ");
+			}
+			printf("]");
+			break;
+		case MAGIC_BAR:
+			// Display the experience bar
+			printf("[\033[8m\033[46m");
+			for(i = 0; i < round(((P->magic*100)/P->magicMax)/5); i++){
+				printf("*");
+			}
+			printf("\033[0m");
+			for(i = 0; i < my_round(20-((P->magic*100)/P->magicMax)/5); i++){
+				printf(" ");
+			}
+			printf("]");
+			break;
+		case SHIELD_BAR:
+			// Display the shield bar
+			printf("[\033[8m\033[7m");
+			for(i = 0; i < round(((P->shield*100)/P->shieldMax)/5); i++){
+				printf("*");
+			}
+			printf("\033[0m");
+			for(i = 0; i < my_round(20-((P->shield*100)/P->shieldMax)/5); i++){
 				printf(" ");
 			}
 			printf("]");
@@ -233,7 +287,7 @@ void display_victory(int lvlEarned, int xpEarned){
 	printf("\t\t*                         *\n");
 	printf("\t\t***************************\n");
 	printf("\n");
-	printf("\033[36m");
+	printf("\033[35m");
 	printf("Vous earned %d experience points.\n", xpEarned);
 	if(lvlEarned != 0){
 		if(lvlEarned == 1) printf("Level up !\n");
@@ -253,15 +307,24 @@ void display_victory(int lvlEarned, int xpEarned){
 * @param lifeChangeMonster By how many the monster's life changed.
 */
 void display_console(int buffConsole[4][3], int text_id, int lifeChangePlayer, int lifeChangeMonster){
+	int heal;
+	if(text_id == 14){
+		heal = buffConsole[0][0];
+	}
+
 	// Shift up the lines
-	for(int i = 0; i < 4; i++){		
+	for(int i = 0; i < 3; i++){		
 		for(int j = 0; j < 3; j++){
 			buffConsole[i][j] = buffConsole[i+1][j];
 		}
 	}
 	buffConsole[3][0] = text_id;
 	buffConsole[3][1] = lifeChangePlayer;
-	buffConsole[3][2] = lifeChangeMonster;
+	if(text_id == 14){
+		buffConsole[3][2] = heal;
+	} else {
+		buffConsole[3][2] = lifeChangeMonster;
+	}
 	
 	// Displays the lines.
 	printf("\n");
@@ -311,6 +374,40 @@ void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster){
 		case 5:
         	printf("You fail to escape ! The monster catchs up with you and attacks you !\n");
         	break;
+        case 6:
+        	printf("You don't have enough magic points to cast a spell.\n");
+        	break;
+        case 7:
+        	printf("You start to focus and rise you hands...\n");
+        	break;
+        case 8:
+        	printf("You lower your hands and let the magic go away.\n");
+        	break;
+        case 9:
+        	printf("You cast a fireball ! ");
+        	printf("Monster : %d HP\n", lifeChangeMonster);
+        	break;
+        case 10:
+        	printf("You cast a shield to protect you.\n");
+        	break;
+        case 11:
+			printf("You attack the monster !");
+			printf(" Player : %d SP", lifeChangePlayer);
+		    printf(" | Monster : %d HP\n", lifeChangeMonster);
+			break;
+		case 12:
+			printf("You attack the monster ! \033[33mCritical hit !\033[0m");
+			printf(" Player : %d SP", lifeChangePlayer);
+		    printf(" | Monster : %d HP\n", lifeChangeMonster);
+			break;
+		case 13:
+			printf("You attack the monster ! \033[31mYou miss !\033[0m");
+			printf(" Player : %d SP\n", lifeChangePlayer);
+			break;
+		case 14:
+			printf("You heal yourself !");
+			printf(" Player : +%d HP | Player's shield : %d SP\n", lifeChangeMonster, lifeChangePlayer);
+			break;
 		default:
 			printf("\n");
 	}
