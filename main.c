@@ -28,6 +28,47 @@ void init_game(pplayer P){
     P->lvl = 1;
     P->xp = 0;
     P->xpStage = 10;
+    P->money = 0;
+    P->potionHP = 0;
+    P->potionMagic = 0;
+}
+
+/**
+* @fn int main_choice()
+* @brief Asks the player which action he wants to do.
+* @return Number referencing the action.
+*/
+int main_choice(){
+    char choice=0;
+
+    while(choice!='1' && choice!='2' && choice!='3')
+    {
+        printf("\033[1mWhat do you want to do ? : \033[0m\n");
+        printf("1 : Fight\n2 : Shop\n3 : Show Inventory\n--> ");
+        scanf("%c",&choice);
+        if(choice != '\n') getchar();
+    }
+
+    return choice-'0';
+}
+
+/**
+* @fn int shop_choice()
+* @brief Asks the player which action he wants to do.
+* @return Number referencing the action.
+*/
+int shop_choice(){
+    char choice=0;
+
+    while(choice!='1' && choice!='2' && choice!='3')
+    {
+        printf("\033[1mWhat do you want to buy ? : \033[0m\n");
+        printf("1 : Health Potion ($20)\n2 : Magic Potion ($20)\n3 : Back\n--> ");
+        scanf("%c",&choice);
+        if(choice != '\n') getchar();
+    }
+
+    return choice-'0';
 }
 
 int main(int argc, char const *argv[])
@@ -46,13 +87,100 @@ int main(int argc, char const *argv[])
 	int playerAlive = 1;
     srand(time(NULL));
 
+    statesMain state = STATE_MAIN_CHOICE;
+    int action;
+
 	P = malloc(sizeof(player));
 
 	init_game(P);
 
     while(playerAlive)
     {
-        playerAlive = fight(P);
+        if(P->money < 20 && P->potionHP + P->potionMagic == 0) state = STATE_FIGHT;
+
+        switch(state){
+            case STATE_MAIN_CHOICE:
+                system("clear");
+                display_header(P,0);
+                action = main_choice();
+                switch(action){
+                    case 1:
+                        state = STATE_FIGHT;
+                        break;
+                    case 2:
+                        state = STATE_SHOP;
+                        break;
+                    case 3:
+                        state = STATE_SHOW_INVENTORY;
+                        break;
+                }
+                break;
+
+            case STATE_SHOW_INVENTORY:
+                system("clear");
+                display_header(P,0);
+                printf("Money : $%d\n", P->money);
+                printf("Health potion(s) : %d\n",P->potionHP);
+                printf("Magic potion(s) : %d\n",P->potionMagic);
+                getchar();
+                state = STATE_MAIN_CHOICE;
+                break;
+
+            case STATE_FIGHT:
+                playerAlive = fight(P);
+                state = STATE_MAIN_CHOICE;
+                break;
+
+            case STATE_GAME_OVER:
+                state = STATE_MAIN_CHOICE;
+                break;
+
+            case STATE_SHOP:
+                system("clear");
+                display_header(P,0);
+                action = shop_choice();
+                switch(action){
+                    case 1:
+                        state = STATE_BUY_HP;
+                        break;
+                    case 2:
+                        state = STATE_BUY_MAGIC;
+                        break;
+                    case 3:
+                        state = STATE_MAIN_CHOICE;
+                        break;
+                }
+                break;
+
+            case STATE_BUY_HP:
+                state = STATE_SHOP;
+                if(P->money >= 20){
+                    P->money -= 20;
+                    P->potionHP += 1;
+                    system("clear");
+                    display_header(P,0);
+                    printf("You bought a Health Potion.\n");
+                } else {
+                    printf("\nYou don't have enough money to buy this.\n");
+                }
+                getchar();
+                break;
+
+            case STATE_BUY_MAGIC:
+                state = STATE_SHOP;
+                if(P->money >= 20){
+                    P->money -= 20;
+                    P->potionMagic += 1;
+                    system("clear");
+                    display_header(P,0);
+                    printf("You bought a Magic Potion.\n");
+                } else {
+                    printf("\nYou don't have enough money to buy this.\n");
+                }
+                getchar();
+                break;
+        }
+
     }
 
 	return 0;

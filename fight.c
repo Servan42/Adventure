@@ -421,6 +421,7 @@ int fight(pplayer P){
                 // Monster is dead
                 monsterAlive = 0;          
                 xp(P, M, &lvlEarned, &xpEarned);
+                P->money += 10;
                 lifeChangePlayer = 0;
                 system("clear");
                 display_header(P,lifeChangePlayer);

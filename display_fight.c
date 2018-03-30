@@ -51,8 +51,10 @@ void display_split(){
 void display_header(pplayer P, int lifeChangePlayer){
 	display_split();
 	printf("\033[1m%s\033[0m | ",P->playerName);
-	printf("\033[1mLevel :\033[0m \033[96m%d\033[0m\n", P->lvl);
+	printf("\033[1mLevel :\033[0m \033[96m%d\033[0m", P->lvl);
+	printf(" | \033[1mMoney :\033[0m \033[33m$%d\033[0m\n", P->money);
 	printf("\033[1mHealth :\033[0m %d/%d HP\n",P->hp,P->hpMax);
+
 	
 	display_bar_player(P, HEALTH_BAR_PLAYER);
 	if(P->shield > 0){
@@ -294,6 +296,7 @@ void display_victory(int lvlEarned, int xpEarned){
 		else printf("You earned %d levels !\n", lvlEarned);
 	}
 	printf("\033[0m\n");
+	// TODO Put the money if no contant
 	display_split();
 
 }
