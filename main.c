@@ -28,7 +28,7 @@ void init_game(pplayer P){
     P->lvl = 1;
     P->xp = 0;
     P->xpStage = 10;
-    P->money = 0;
+    P->money = 1000;
     P->potionHP = 0;
     P->potionMagic = 0;
 }

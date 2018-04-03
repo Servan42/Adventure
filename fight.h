@@ -32,13 +32,17 @@ typedef enum {
 	STATE_RUN_SUCCESS,
 	STATE_SPELL,
 	STATE_FIREBALL,
-	STATE_SHIELD
+	STATE_SHIELD,
+	STATE_OBJECT,
+	STATE_USE_HP,
+	STATE_USE_MAGIC
 } states;
 
 int alea(int a, int b);
 void init_monster(pmonster M, pplayer P);
 int action_choice();
 int spell_choice();
+int object_choice(pplayer P);
 void xp(pplayer P, pmonster M, int *number_of_level_earned, int *number_of_xp_earned);
 void monster_attack(pplayer P, pmonster M, int *damagesToPlayer);
 void attack(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeChangeMonster);

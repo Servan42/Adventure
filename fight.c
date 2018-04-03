@@ -47,10 +47,10 @@ void init_monster(pmonster M, pplayer P){
 int action_choice(){
     char choice=0;
 
-    while(choice!='1' && choice!='2' && choice!='3')
+    while(choice!='1' && choice!='2' && choice!='3' && choice!='4')
     {
         printf("\n\033[1mWhat do you want to do ? : \033[0m\n");
-        printf("1 : Attack\n2 : Spell\n3 : Flee\n--> ");
+        printf("1 : Attack\n2 : Spell\n3 : Flee\n4 : Use an object\n--> ");
         scanf("%c",&choice);
 		if(choice != '\n') getchar();
     }
@@ -60,7 +60,7 @@ int action_choice(){
 
 /**
 * @fn int spell_choice()
-* @brief Asks the player which action he wants to do.
+* @brief Asks the player which spell he wants to cast.
 * @return Number referencing the action.
 */
 int spell_choice(){
@@ -70,6 +70,25 @@ int spell_choice(){
     {
         printf("\n\033[1mWhich spell do you want to cast ? : \033[0m\n");
         printf("1 : Fireball\n2 : Heal\n3 : Shield\n4 : Back\n--> ");
+        scanf("%c",&choice);
+        if(choice != '\n') getchar();
+    }
+
+    return choice-'0';
+}
+
+/**
+* @fn int object_choice()
+* @brief Asks the player which object he wants to use.
+* @return Number referencing the action.
+*/
+int object_choice(pplayer P){
+    char choice=0;
+
+    while(choice!='1' && choice!='2' && choice!='3')
+    {
+        printf("\n\033[1mWhich object do you want to use ? : \033[0m\n");
+        printf("1 : Magic Potion (%d)\n2 : Health Potion (%d)\n3 : Back\n--> ", P->potionMagic, P->potionHP);
         scanf("%c",&choice);
         if(choice != '\n') getchar();
     }
@@ -233,7 +252,6 @@ int run(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *lifeCha
     	*text_id = 5;
         // Monster's attack
         monster_attack(P, M, &damagesToPlayer);
-
         *lifeChangePlayer = 0-damagesToPlayer;
         *lifeChangeMonster = 0;
         return 0;
@@ -318,6 +336,9 @@ int fight(pplayer P){
                     case 3:
                         state = STATE_RUN;
                         break;
+                    case 4:
+                        state = STATE_OBJECT;
+                        break;
                 }
                 break;
 
@@ -397,6 +418,7 @@ int fight(pplayer P){
                 P->shield = P->shieldMax;
                 monster_attack(P, M, &damagesToPlayer);
                 lifeChangePlayer = 0-damagesToPlayer;
+                lifeChangeMonster = 0;
                 state = STATE_CHOICE;
                 break;
 
@@ -436,6 +458,61 @@ int fight(pplayer P){
                 display_header(P,lifeChangePlayer);
                 display_you_lose();
                 break;
+
+            case STATE_OBJECT:
+                // PLayer wants to use an object
+                system("clear");
+                display_header(P,lifeChangePlayer);
+                display_monster(M,P, lifeChangeMonster);
+                text_id = -1; // TODO
+                display_console(buffConsole ,text_id, lifeChangePlayer, lifeChangeMonster);
+                action = object_choice(P);
+                switch(action){
+                    case 1:
+                        state = STATE_USE_MAGIC;
+                        break;
+                    case 2:
+                        state = STATE_USE_HP;
+                        break;
+                    case 3:
+                        text_id = -1; // TODO
+                        state = STATE_CHOICE;
+                        break;
+                }
+                break;
+
+            case STATE_USE_HP:
+                if(P->potionHP == 0){
+                    text_id = -1; // TODO
+                    state = STATE_OBJECT;
+                } else {
+                    (P->potionHP)--;
+                    P->hp = P->hpMax;
+                    monster_attack(P, M, &damagesToPlayer);
+                    lifeChangePlayer = 0-damagesToPlayer;
+                    lifeChangeMonster = 0;
+                    if(P->shield > 0) text_id = -1; // TODO
+                    else text_id = -1; // TODO
+                    state = STATE_CHOICE;
+                }
+                break;
+
+            case STATE_USE_MAGIC:
+                if(P->potionMagic == 0){
+                    text_id = -1; // TODO
+                    state = STATE_OBJECT;
+                } else {
+                    (P->potionMagic)--;
+                    P->magic = P->magicMax;
+                    monster_attack(P, M, &damagesToPlayer);
+                    lifeChangePlayer = 0-damagesToPlayer;
+                    lifeChangeMonster = 0;
+                    if(P->shield > 0) text_id = -1; // TODO
+                    else text_id = -1; // TODO
+                    state = STATE_CHOICE;   
+                }
+                break;
+
         }
     }
 

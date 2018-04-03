@@ -296,7 +296,7 @@ void display_victory(int lvlEarned, int xpEarned){
 		else printf("You earned %d levels !\n", lvlEarned);
 	}
 	printf("\033[0m\n");
-	// TODO Put the money if no contant
+	// TODO Put the money if not contant
 	display_split();
 
 }
@@ -311,6 +311,7 @@ void display_victory(int lvlEarned, int xpEarned){
 */
 void display_console(int buffConsole[4][3], int text_id, int lifeChangePlayer, int lifeChangeMonster){
 	int heal;
+	// TODO OR text_id == 4, I want the details even for the heal when there is no sheild
 	if(text_id == 14){
 		heal = buffConsole[0][0];
 	}
