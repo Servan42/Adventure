@@ -311,7 +311,6 @@ void display_victory(int lvlEarned, int xpEarned){
 */
 void display_console(int buffConsole[4][3], int text_id, int lifeChangePlayer, int lifeChangeMonster){
 	int heal;
-	// TODO OR text_id == 4, I want the details even for the heal when there is no sheild
 	if(text_id == 14){
 		heal = buffConsole[0][0];
 	}
@@ -411,6 +410,15 @@ void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster){
 		case 14:
 			printf("You heal yourself !");
 			printf(" Player : +%d HP | Player's shield : %d SP\n", lifeChangeMonster, lifeChangePlayer);
+			break;
+		case 15:
+			printf("You search in your bag.\n");
+			break;
+		case 16:
+			printf("You close your bag.\n");
+			break;
+		case 17:
+			printf("You can't find this potion in your bag.\n");
 			break;
 		default:
 			printf("\n");

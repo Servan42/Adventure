@@ -337,6 +337,7 @@ int fight(pplayer P){
                         state = STATE_RUN;
                         break;
                     case 4:
+                        text_id = 15;
                         state = STATE_OBJECT;
                         break;
                 }
@@ -464,7 +465,6 @@ int fight(pplayer P){
                 system("clear");
                 display_header(P,lifeChangePlayer);
                 display_monster(M,P, lifeChangeMonster);
-                text_id = -1; // TODO
                 display_console(buffConsole ,text_id, lifeChangePlayer, lifeChangeMonster);
                 action = object_choice(P);
                 switch(action){
@@ -475,7 +475,7 @@ int fight(pplayer P){
                         state = STATE_USE_HP;
                         break;
                     case 3:
-                        text_id = -1; // TODO
+                        text_id = 16;
                         state = STATE_CHOICE;
                         break;
                 }
@@ -483,7 +483,7 @@ int fight(pplayer P){
 
             case STATE_USE_HP:
                 if(P->potionHP == 0){
-                    text_id = -1; // TODO
+                    text_id = 17;
                     state = STATE_OBJECT;
                 } else {
                     (P->potionHP)--;
@@ -499,7 +499,7 @@ int fight(pplayer P){
 
             case STATE_USE_MAGIC:
                 if(P->potionMagic == 0){
-                    text_id = -1; // TODO
+                    text_id = 17;
                     state = STATE_OBJECT;
                 } else {
                     (P->potionMagic)--;
