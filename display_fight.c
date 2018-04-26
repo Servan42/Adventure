@@ -52,7 +52,7 @@ void display_header(pplayer P, int lifeChangePlayer){
 	display_split();
 	printf("\033[1m%s\033[0m | ",P->playerName);
 	printf("\033[1mLevel :\033[0m \033[96m%d\033[0m", P->lvl);
-	printf(" | \033[1mMoney :\033[0m \033[33m$%d\033[0m\n", P->money);
+	printf(" | \033[1mMoney :\033[0m \033[33m%s%d\033[0m\n", CURRENCY, P->money);
 	printf("\033[1mHealth :\033[0m %d/%d HP\n",P->hp,P->hpMax);
 
 	
@@ -84,6 +84,24 @@ void display_header(pplayer P, int lifeChangePlayer){
 	display_bar_player(P, MAGIC_BAR); printf("\n");
 
 	display_split(); printf("\n");
+}
+
+/**
+* @fn void display_inventory(pplayer P)
+* @brief Display the inventory of the player.
+* @param P Pointer on the player structure.
+*/
+void display_inventory(pplayer P){
+	printf("\033[1mInventory :\033[0m\n");
+    if(P->money > 0)
+    	printf("Money : \033[33m%s%d\033[0m\n", CURRENCY, P->money);
+    if(P->potionMagic > 0)
+    	printf("Magic potion(s) : \033[36m%d\033[0m\n",P->potionMagic);
+    if(P->potionHP > 0)
+    	printf("Health potion(s) : \033[31m%d\033[0m\n",P->potionHP);
+    printf("\n");
+   	display_split();
+    printf("\n");
 }
 
 /**
@@ -419,6 +437,12 @@ void display_text(int text_id, int lifeChangePlayer, int lifeChangeMonster){
 			break;
 		case 17:
 			printf("You can't find this potion in your bag.\n");
+			break;
+		case 18:
+			printf("You drink a health potion.\n");
+			break;
+		case 19:
+			printf("You drink a magic potion.\n");
 			break;
 		default:
 			printf("\n");

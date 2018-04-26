@@ -10,6 +10,7 @@
 
 void display_split();
 void display_header(pplayer P, int lifeChangePlayer);
+void display_inventory(pplayer P);
 void display_monster(pmonster M, pplayer P, int lifeChangeMonster);
 double my_round(double a);
 void display_bar_player(pplayer P, int bar);

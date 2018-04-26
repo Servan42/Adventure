@@ -31,7 +31,7 @@ typedef struct _player {
 	int money; /*!< Player's wallet */
 	int potionHP; /*!< Number of owned HP potions */
 	int potionMagic; /*!< Number of owned magic potions */
-	} player, *pplayer;
+} player, *pplayer;
 
 /**
 * @def CC
@@ -50,5 +50,23 @@ typedef struct _player {
 * @brief Under this percentage, the player fails to run away.
 */
 #define FUITE 25
+
+/**
+* @def CURRENCY
+* @brief The currency in the game.
+*/
+#define CURRENCY "€"
+
+/**
+* @def MAGIC_POTION_PRICE
+* @brief Price of one magic potion.
+*/
+#define MAGIC_POTION_PRICE 20
+
+/**
+* @def MANA_POTION_PRICE
+* @brief Price of one health potion.
+*/
+#define HP_POTION_PRICE 20
 
 #endif

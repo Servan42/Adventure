@@ -19,7 +19,6 @@ int shop_choice();
 */
 typedef enum {
 	STATE_MAIN_CHOICE,
-	STATE_SHOW_INVENTORY,
 	STATE_FIGHT,
 	STATE_GAME_OVER,
 	STATE_SHOP,

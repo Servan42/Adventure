@@ -50,7 +50,7 @@ int action_choice(){
     while(choice!='1' && choice!='2' && choice!='3' && choice!='4')
     {
         printf("\n\033[1mWhat do you want to do ? : \033[0m\n");
-        printf("1 : Attack\n2 : Spell\n3 : Flee\n4 : Use an object\n--> ");
+        printf("1 : Attack\n2 : Spell\n3 : Use an object\n4 : Flee\n--> ");
         scanf("%c",&choice);
 		if(choice != '\n') getchar();
     }
@@ -88,7 +88,7 @@ int object_choice(pplayer P){
     while(choice!='1' && choice!='2' && choice!='3')
     {
         printf("\n\033[1mWhich object do you want to use ? : \033[0m\n");
-        printf("1 : Magic Potion (%d)\n2 : Health Potion (%d)\n3 : Back\n--> ", P->potionMagic, P->potionHP);
+        printf("1 : Magic Potion (\033[36m%d\033[0m)\n2 : Health Potion (\033[31m%d\033[0m)\n3 : Back\n--> ", P->potionMagic, P->potionHP);
         scanf("%c",&choice);
         if(choice != '\n') getchar();
     }
@@ -334,11 +334,11 @@ int fight(pplayer P){
                         state = STATE_SPELL;
                         break;
                     case 3:
-                        state = STATE_RUN;
-                        break;
-                    case 4:
                         text_id = 15;
                         state = STATE_OBJECT;
+                        break;
+                    case 4:
+                        state = STATE_RUN;
                         break;
                 }
                 break;
@@ -491,8 +491,9 @@ int fight(pplayer P){
                     monster_attack(P, M, &damagesToPlayer);
                     lifeChangePlayer = 0-damagesToPlayer;
                     lifeChangeMonster = 0;
-                    if(P->shield > 0) text_id = -1; // TODO
-                    else text_id = -1; // TODO
+                    // if(P->shield > 0) text_id = -1;
+                    // else text_id = -1;
+                    text_id = 18;
                     state = STATE_CHOICE;
                 }
                 break;
@@ -507,8 +508,9 @@ int fight(pplayer P){
                     monster_attack(P, M, &damagesToPlayer);
                     lifeChangePlayer = 0-damagesToPlayer;
                     lifeChangeMonster = 0;
-                    if(P->shield > 0) text_id = -1; // TODO
-                    else text_id = -1; // TODO
+                    // if(P->shield > 0) text_id = -1;
+                    // else text_id = -1;
+                    text_id = 19;
                     state = STATE_CHOICE;   
                 }
                 break;

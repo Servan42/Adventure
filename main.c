@@ -28,7 +28,7 @@ void init_game(pplayer P){
     P->lvl = 1;
     P->xp = 0;
     P->xpStage = 10;
-    P->money = 1000;
+    P->money = 10;
     P->potionHP = 0;
     P->potionMagic = 0;
 }
@@ -41,10 +41,10 @@ void init_game(pplayer P){
 int main_choice(){
     char choice=0;
 
-    while(choice!='1' && choice!='2' && choice!='3')
+    while(choice!='1' && choice!='2')
     {
         printf("\033[1mWhat do you want to do ? : \033[0m\n");
-        printf("1 : Fight\n2 : Shop\n3 : Show Inventory\n--> ");
+        printf("1 : Fight\n2 : Shop\n--> ");
         scanf("%c",&choice);
         if(choice != '\n') getchar();
     }
@@ -63,7 +63,7 @@ int shop_choice(){
     while(choice!='1' && choice!='2' && choice!='3')
     {
         printf("\033[1mWhat do you want to buy ? : \033[0m\n");
-        printf("1 : Health Potion ($20)\n2 : Magic Potion ($20)\n3 : Back\n--> ");
+        printf("1 : Magic Potion (%s%d)\n2 : Health Potion (%s%d)\n3 : Back\n--> ", CURRENCY, MAGIC_POTION_PRICE, CURRENCY, HP_POTION_PRICE);
         scanf("%c",&choice);
         if(choice != '\n') getchar();
     }
@@ -79,8 +79,6 @@ int main(int argc, char const *argv[])
     printf("To play on a stable version, please checkout the Version 1.0\n\n");
     printf("WORK IN PROGRESS : \n\n");
     printf("The balancing is not done yet.\n");
-    printf("There is no way to earn magic points.\n");
-    printf("  -> A shop is going to be implemented in order to buy health and magic potions.\n");
     printf("----------------------------------------------------------\n\n");
 
 	pplayer P;
@@ -96,12 +94,13 @@ int main(int argc, char const *argv[])
 
     while(playerAlive)
     {
-        if(P->money < 20 && P->potionHP + P->potionMagic == 0) state = STATE_FIGHT;
+        if(P->money < MAGIC_POTION_PRICE && P->money < HP_POTION_PRICE && P->potionHP + P->potionMagic == 0) state = STATE_FIGHT;
 
         switch(state){
             case STATE_MAIN_CHOICE:
                 system("clear");
                 display_header(P,0);
+                display_inventory(P);
                 action = main_choice();
                 switch(action){
                     case 1:
@@ -110,20 +109,7 @@ int main(int argc, char const *argv[])
                     case 2:
                         state = STATE_SHOP;
                         break;
-                    case 3:
-                        state = STATE_SHOW_INVENTORY;
-                        break;
                 }
-                break;
-
-            case STATE_SHOW_INVENTORY:
-                system("clear");
-                display_header(P,0);
-                printf("Money : $%d\n", P->money);
-                printf("Health potion(s) : %d\n",P->potionHP);
-                printf("Magic potion(s) : %d\n",P->potionMagic);
-                getchar();
-                state = STATE_MAIN_CHOICE;
                 break;
 
             case STATE_FIGHT:
@@ -138,13 +124,14 @@ int main(int argc, char const *argv[])
             case STATE_SHOP:
                 system("clear");
                 display_header(P,0);
+                display_inventory(P);
                 action = shop_choice();
                 switch(action){
                     case 1:
-                        state = STATE_BUY_HP;
+                        state = STATE_BUY_MAGIC;
                         break;
                     case 2:
-                        state = STATE_BUY_MAGIC;
+                        state = STATE_BUY_HP;
                         break;
                     case 3:
                         state = STATE_MAIN_CHOICE;
@@ -154,11 +141,12 @@ int main(int argc, char const *argv[])
 
             case STATE_BUY_HP:
                 state = STATE_SHOP;
-                if(P->money >= 20){
-                    P->money -= 20;
+                if(P->money >= HP_POTION_PRICE){
+                    P->money -= HP_POTION_PRICE;
                     P->potionHP += 1;
                     system("clear");
                     display_header(P,0);
+                	display_inventory(P);
                     printf("You bought a Health Potion.\n");
                 } else {
                     printf("\nYou don't have enough money to buy this.\n");
@@ -168,11 +156,12 @@ int main(int argc, char const *argv[])
 
             case STATE_BUY_MAGIC:
                 state = STATE_SHOP;
-                if(P->money >= 20){
-                    P->money -= 20;
+                if(P->money >= MAGIC_POTION_PRICE){
+                    P->money -= MAGIC_POTION_PRICE;
                     P->potionMagic += 1;
                     system("clear");
                     display_header(P,0);
+                	display_inventory(P);
                     printf("You bought a Magic Potion.\n");
                 } else {
                     printf("\nYou don't have enough money to buy this.\n");
