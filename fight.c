@@ -117,7 +117,6 @@ void xp(pplayer P, pmonster M, int *number_of_level_earned, int *number_of_xp_ea
         (P->lvl)++;
         (*number_of_level_earned)++;
         P->hpMax = 50 * P->lvl;
-        P->shieldMax = P->hpMax;
         P->hp = P->hpMax;
         P->magic = P->magicMax;
     }
@@ -416,6 +415,7 @@ int fight(pplayer P){
 
             case STATE_SHIELD:
                 text_id = 10;
+                P->shieldMax = ((float)alea(50,100))/100 * (float)P->hpMax;
                 P->shield = P->shieldMax;
                 monster_attack(P, M, &damagesToPlayer);
                 lifeChangePlayer = 0-damagesToPlayer;
@@ -443,12 +443,12 @@ int fight(pplayer P){
             case STATE_VICTORY:
                 // Monster is dead
                 monsterAlive = 0;          
+                P->money += M->lvl - P->lvl + 6;
                 xp(P, M, &lvlEarned, &xpEarned);
-                P->money += 10;
                 lifeChangePlayer = 0;
                 system("clear");
                 display_header(P,lifeChangePlayer);
-                display_victory(lvlEarned,xpEarned);
+                display_victory(lvlEarned,xpEarned,M->lvl - P->lvl + 6);
                 getchar();
                 break;
 

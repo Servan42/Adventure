@@ -14,7 +14,7 @@
 * @param P Pointer on the player structure.
 */
 void init_game(pplayer P){
-	printf("Welcome ! What is your name ?\n-->");
+	printf("Welcome ! What is your name ?\n--> ");
     scanf("%s",P->playerName);
     getchar();
     system("clear");
@@ -73,6 +73,7 @@ int shop_choice(){
 
 int main(int argc, char const *argv[])
 {
+    /*
     printf("----------------------------------------------------------\n");
     printf("DISCLAIMER :\n\n");
     printf("This release is still in developement.\n");
@@ -80,7 +81,26 @@ int main(int argc, char const *argv[])
     printf("WORK IN PROGRESS : \n\n");
     printf("The balancing is not done yet.\n");
     printf("----------------------------------------------------------\n\n");
+    getchar();
+    */
 
+    display_help();
+
+    // Ask the user if he wants the compact version of the game.
+    char choice;
+    do{
+        printf("\033[1mDisclaimer :\033[0m\n\n");
+        printf("Do you want to run the game in compact version ?\n");
+        printf("(In compact version, the monster image is not displayed. Useful if you have a small screen).\n");
+        printf("Yes(y) / No(n) : ");
+        scanf("%c",&choice);
+        if(choice != '\n') getchar();
+        system("clear");
+    } while(choice != 'y' && choice != 'n');
+    if(choice == 'y') compactVersion = 1;
+    else compactVersion = 0;
+
+    // Setting up the game.
 	pplayer P;
 	int playerAlive = 1;
     srand(time(NULL));
@@ -92,6 +112,7 @@ int main(int argc, char const *argv[])
 
 	init_game(P);
 
+    // Game start.
     while(playerAlive)
     {
         if(P->money < MAGIC_POTION_PRICE && P->money < HP_POTION_PRICE && P->potionHP + P->potionMagic == 0) state = STATE_FIGHT;

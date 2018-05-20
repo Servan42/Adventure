@@ -69,4 +69,9 @@ typedef struct _player {
 */
 #define HP_POTION_PRICE 20
 
+/**
+* States if the game is in compact version or not.
+*/
+int compactVersion;
+
 #endif

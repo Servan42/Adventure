@@ -112,17 +112,21 @@ void display_inventory(pplayer P){
 * @param lifeChangeMonster By how many the player's life changed.
 */
 void display_monster(pmonster M, pplayer P, int lifeChangeMonster){
-	display_monster_ascii(M->ascii);
-	printf("\n");
+	if(!compactVersion){
+		display_monster_ascii(M->ascii);
+		printf("\n");
+	} else {
+		printf("\033[1mMonster stats :\033[0m\n");
+	}
     
     if((P->lvl + 1) == M->lvl){
-        printf("\n\033[1mLevel :\033[0m \033[33m%d\033[0m\n",M->lvl);
+        printf("\033[1mLevel :\033[0m \033[33m%d\033[0m\n",M->lvl);
 	} else if(P->lvl < M->lvl){
-        printf("\n\033[1mLevel :\033[0m \033[31m%d\033[0m\n",M->lvl);
+        printf("\033[1mLevel :\033[0m \033[31m%d\033[0m\n",M->lvl);
     } else if(P->lvl == M->lvl){
-        printf("\n\033[1mLevel :\033[0m \033[32m%d\033[0m\n",M->lvl);
+        printf("\033[1mLevel :\033[0m \033[32m%d\033[0m\n",M->lvl);
 	} else {
-        printf("\n\033[1mLevel :\033[0m %d\n",M->lvl);
+        printf("\033[1mLevel :\033[0m %d\n",M->lvl);
     }
 	
 	printf("\033[1mHealth :\033[0m %d/%d HP\n", M->hp, M->hpMax);
@@ -299,8 +303,9 @@ void display_run(){
 * @brief Displays the "YOU WIN" title and the experience notifications.
 * @param lvlEarned Number of levels earned by the player when he killed the monster.
 * @param xpEarned Number of experience points earned by the player when he killed the monster.
+* @param moenyEarned Number of money earned by the player when he killed the monster.
 */
-void display_victory(int lvlEarned, int xpEarned){
+void display_victory(int lvlEarned, int xpEarned, int moneyEarned){
 	printf("\t\t***************************\n");
 	printf("\t\t*                         *\n");
 	printf("\t\t*        YOU WIN !        *\n");
@@ -309,14 +314,16 @@ void display_victory(int lvlEarned, int xpEarned){
 	printf("\n");
 	printf("\033[35m");
 	printf("Vous earned %d experience points.\n", xpEarned);
+	printf("\033[0m\033[96m");
 	if(lvlEarned != 0){
 		if(lvlEarned == 1) printf("Level up !\n");
 		else printf("You earned %d levels !\n", lvlEarned);
 	}
-	printf("\033[0m\n");
-	// TODO Put the money if not contant
-	display_split();
+	printf("\033[0m");
+	printf("\033[33mYou earned %s%d.\033[0m\n",CURRENCY, moneyEarned);
 
+	printf("\n");
+	display_split();
 }
 
 /**
@@ -535,4 +542,33 @@ printf("                                        '' ''\n");
 
     printf("\n");
 
+}
+
+void display_help(){
+	system("clear");
+
+	printf("\033[1mHow to play :\033[0m\n\n");
+
+	printf("\033[1mGeneral :\033[0m\n");
+	printf("    The goal is to survive as long as possible.\n\n");
+	
+	printf("\033[1mControls :\033[0m\n");
+	printf("    The game works with a menu system. You have to enter a number to choose an action.\n\n");
+
+	printf("\033[1mShop :\033[0m\n");
+	printf("    The shop is a place where you can buy potions.\n");
+	printf("    Health potion : Recover all your health points.\n");
+	printf("    Magic points  : Recover all you magic points.\n\n");
+
+	printf("\033[1mFighting system :\033[0m\n");
+	printf("    Attack : You attack the monster an he fights back.\n");
+	printf("    Spell  :\n");
+	printf("        Fireball : You cast a powerful fireball and the monster doesn't have time to fight back.\n");
+	printf("        Heal     : You recover a bit of your health points, and the monster attacks you.\n");
+	printf("        Sheild   : You cast a sheild that takes the damages for you, and the monster attacks you.\n");
+	printf("    Object : Choose which potion you want to drink, and the monster attacks you.\n");
+	printf("    Flee   : You have %d%c to run away from the fight.\n", 100-FUITE,'%');
+
+	getchar();
+	system("clear");
 }
