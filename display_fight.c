@@ -558,16 +558,16 @@ void display_help(){
 	printf("\033[1mShop :\033[0m\n");
 	printf("    The shop is a place where you can buy potions.\n");
 	printf("    Health potion : Recover all your health points.\n");
-	printf("    Magic points  : Recover all you magic points.\n\n");
+	printf("    Magic points  : Recover all your magic points.\n\n");
 
 	printf("\033[1mFighting system :\033[0m\n");
-	printf("    Attack : You attack the monster an he fights back.\n");
+	printf("    Attack : You attack the monster and he fights back.\n");
 	printf("    Spell  :\n");
 	printf("        Fireball : You cast a powerful fireball and the monster doesn't have time to fight back.\n");
 	printf("        Heal     : You recover a bit of your health points, and the monster attacks you.\n");
-	printf("        Sheild   : You cast a sheild that takes the damages for you, and the monster attacks you.\n");
+	printf("        Shield   : You cast a shield that takes the damages for you, and the monster attacks you.\n");
 	printf("    Object : Choose which potion you want to drink, and the monster attacks you.\n");
-	printf("    Flee   : You have %d%c to run away from the fight.\n", 100-FUITE,'%');
+	printf("    Flee   : You have %d%c chance to run away from the fight.\n", 100-FUITE,'%');
 
 	getchar();
 	system("clear");
