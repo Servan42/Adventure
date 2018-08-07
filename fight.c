@@ -277,6 +277,7 @@ void fireball(pplayer P, pmonster M, int *text_id, int *lifeChangePlayer, int *l
     if(M->hp < 0) M->hp = 0;
 
     *lifeChangeMonster = 0-damagesToMonster;
+    *lifeChangePlayer = 0;
 }
 
 /**
