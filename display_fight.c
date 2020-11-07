@@ -356,7 +356,7 @@ void display_console(int buffConsole[4][3], int text_id, int lifeChangePlayer, i
 	
 	// Displays the lines.
 	printf("\n");
-	for(int i; i < 4; i++){
+	for(int i = 0; i < 4; i++){
 		display_text(buffConsole[i][0], buffConsole[i][1], buffConsole[i][2]);
 	}
 	printf("\n");
